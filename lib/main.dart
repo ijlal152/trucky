@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import 'core/theme/app_theme.dart';
 import 'src/presentation/analytics/bloc/analytics_bloc.dart';
 import 'src/presentation/authentication/bloc/auth_bloc.dart';
 import 'src/presentation/client-supplier/bloc/client_supplier_bloc.dart';
@@ -46,10 +47,9 @@ class _AppView extends StatelessWidget {
     return MaterialApp.router(
       title: 'Trucky',
       debugShowCheckedModeBanner: false,
-      theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
-        useMaterial3: true,
-      ),
+      theme: AppTheme.light,
+      darkTheme: AppTheme.dark,
+      themeMode: ThemeMode.system,
       routerConfig: AppRouter.router,
     );
   }
