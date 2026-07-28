@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import 'core/theme/app_theme.dart';
@@ -59,6 +60,27 @@ class _AppView extends StatelessWidget {
           theme: AppTheme.light,
           darkTheme: AppTheme.dark,
           themeMode: ThemeMode.system,
+
+          // ─── Localization ──────────────────────────────────────────
+          supportedLocales: const [
+            Locale('en', 'US'),
+            Locale('ar', 'SA'),
+            Locale('fr', 'FR'),
+          ],
+          localizationsDelegates: const [
+            GlobalMaterialLocalizations.delegate,
+            GlobalWidgetsLocalizations.delegate,
+            GlobalCupertinoLocalizations.delegate,
+          ],
+          localeResolutionCallback: (locale, supportedLocales) {
+            for (final supported in supportedLocales) {
+              if (supported.languageCode == locale?.languageCode) {
+                return supported;
+              }
+            }
+            return const Locale('en', 'US');
+          },
+
           routerConfig: AppRouter.router,
         );
       },
