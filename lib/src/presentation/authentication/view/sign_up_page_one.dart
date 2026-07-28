@@ -53,7 +53,7 @@ class _SignUpPageOneState extends State<SignUpPageOne> {
 
     return BlocListener<AuthBloc, AuthState>(
       listener: (context, state) {
-        if (state.status == AuthStatus.authenticated && state.isValidPassword) {
+        if (state.status == AuthStatus.stepOneVerified) {
           context.goNamed(AppRoutes.signUpStepTwo.name);
         } else if (state.status == AuthStatus.error) {
           ScaffoldMessenger.of(context).showSnackBar(

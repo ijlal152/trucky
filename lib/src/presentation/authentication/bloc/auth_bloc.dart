@@ -146,6 +146,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     // For now, proceed to step two
     emit(
       state.copyWith(
+        status: AuthStatus.stepOneVerified,
         isLoading: false,
         successMessage: 'Step one completed',
         isEmailRequired: false,

@@ -60,6 +60,7 @@ class _SignInPageState extends State<SignInPage> {
           case AuthStatus.initial:
           case AuthStatus.loading:
           case AuthStatus.unauthenticated:
+          case AuthStatus.stepOneVerified:
             break;
         }
       },

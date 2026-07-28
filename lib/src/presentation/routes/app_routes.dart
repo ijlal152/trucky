@@ -7,7 +7,7 @@ class AppRoutes {
   static const RouteSpec signUp = RouteSpec._(name: 'signUp', path: '/sign-up');
   static const RouteSpec signUpStepTwo = RouteSpec._(
     name: 'signUpStepTwo',
-    path: '/sign-up/step-two',
+    path: 'step-two',
   );
   static const RouteSpec home = RouteSpec._(name: 'home', path: '/home');
 
