@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import 'core/theme/app_theme.dart';
 import 'src/presentation/analytics/bloc/analytics_bloc.dart';
@@ -13,7 +14,10 @@ import 'src/presentation/settings/bloc/settings_bloc.dart';
 import 'src/presentation/splash/bloc/splash_bloc.dart';
 import 'src/presentation/treasury/bloc/treasury_bloc.dart';
 
-void main() {
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await ScreenUtil.ensureScreenSize();
+  await Future.delayed(const Duration(milliseconds: 150));
   runApp(const TruckyApp());
 }
 
@@ -44,13 +48,20 @@ class _AppView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp.router(
-      title: 'Trucky',
-      debugShowCheckedModeBanner: false,
-      theme: AppTheme.light,
-      darkTheme: AppTheme.dark,
-      themeMode: ThemeMode.system,
-      routerConfig: AppRouter.router,
+    return ScreenUtilInit(
+      designSize: const Size(390, 844), // iPhone 14 reference
+      minTextAdapt: true,
+      splitScreenMode: true,
+      builder: (context, child) {
+        return MaterialApp.router(
+          title: 'Trucky',
+          debugShowCheckedModeBanner: false,
+          theme: AppTheme.light,
+          darkTheme: AppTheme.dark,
+          themeMode: ThemeMode.system,
+          routerConfig: AppRouter.router,
+        );
+      },
     );
   }
 }

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:trucky/common/widgets/custom_decorated_container.dart';
+import 'package:trucky/core/theme/app_colors.dart';
 
 part 'ScrollAwareFAB.dart';
 part 'bottom_sheet_payment_type_items.dart';
