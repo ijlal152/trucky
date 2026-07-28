@@ -16,6 +16,10 @@ dependencies:
 
   # State Management
   bloc: ^9.2.1
+  flutter_bloc: ^9.1.0
+
+  # Navigation
+  go_router: ^14.8.1
 
   # Local Database
   get_storage: ^2.1.1
