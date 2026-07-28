@@ -21,7 +21,7 @@ class ShowStepsWidget extends StatelessWidget {
         text: title,
         textSize: 13.sp,
         fontWeight: FontWeight.w600,
-        fontFamily: 'Gilroy-SemiBold',
+        fontFamily: 'Inter-SemiBold',
         textColor: Theme.of(context).colorScheme.onSurface,
       ),
     );
@@ -85,7 +85,7 @@ class TermsOfUseAndPrivacyPolicy extends StatelessWidget {
         text: TextSpan(
           style: TextStyle(
             fontSize: 12.sp,
-            fontFamily: 'Gilroy-Regular',
+            fontFamily: 'Inter-Regular',
             color: Theme.of(context).colorScheme.onSurfaceVariant,
           ),
           children: [

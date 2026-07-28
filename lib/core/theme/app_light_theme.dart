@@ -62,7 +62,7 @@ class AppLightTheme {
       splashColor: AppColors.primaryBlue.withValues(alpha: 0.08),
       highlightColor: AppColors.primaryBlue.withValues(alpha: 0.04),
       hoverColor: AppColors.primaryBlue.withValues(alpha: 0.04),
-      fontFamily: 'Gilroy-Regular',
+      fontFamily: 'Inter-Regular',
 
       // -------------------------------------------------------------------------
       // Text theme
