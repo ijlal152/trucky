@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'package:trucky/src/presentation/routes/app_routes.dart';
 
 import '../bloc/splash_bloc.dart';
 
@@ -13,10 +14,10 @@ class SplashPage extends StatelessWidget {
       listener: (context, state) {
         switch (state.status) {
           case SplashStatus.authenticated:
-            context.goNamed('home');
+            context.goNamed(AppRoutes.home.name);
             break;
           case SplashStatus.unauthenticated:
-            context.goNamed('signIn');
+            context.goNamed(AppRoutes.signIn.name);
             break;
           case SplashStatus.initial:
           case SplashStatus.loading:

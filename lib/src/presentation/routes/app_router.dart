@@ -48,3 +48,10 @@ class AppRouter {
     ],
   );
 }
+
+
+// extension GoRouterExt on BuildContext {
+//   void goToHome() => goNamed(AppRoutes.home.name);
+//   void goToSignIn() => goNamed(AppRoutes.signIn.name);
+//   // ...
+// }
