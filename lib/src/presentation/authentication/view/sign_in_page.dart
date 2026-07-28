@@ -43,13 +43,8 @@ class _SignInPageState extends State<SignInPage> {
   @override
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
-    final isDark = Theme.of(context).brightness == Brightness.dark;
 
     final linkColor = const Color(0xFF0093B9);
-    final buttonBackground = isDark
-        ? colorScheme.surfaceContainerHighest
-        : const Color(0xFFE8EBEF);
-    final buttonForeground = colorScheme.onSurface;
 
     return BlocListener<AuthBloc, AuthState>(
       listener: (context, state) {

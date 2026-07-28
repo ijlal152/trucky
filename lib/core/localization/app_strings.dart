@@ -24,6 +24,10 @@ class AppStrings {
   static const String phoneNumber = 'phoneNumber';
   static const String businessName = 'businessName';
   static const String address = 'address';
+  static const String step1Of2 = 'step1Of2';
+  static const String step2Of2 = 'step2Of2';
+  static const String selectCountry = 'selectCountry';
+  static const String searchCountry = 'searchCountry';
 
   // ─── Dashboard ─────────────────────────────────────────────────────
   static const String exit = 'exit';

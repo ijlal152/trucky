@@ -17,19 +17,100 @@ class SignInRequested extends AuthEvent {
   List<Object?> get props => [email, password];
 }
 
-class SignUpRequested extends AuthEvent {
+class SignUpStepOneRequested extends AuthEvent {
   final String email;
   final String password;
-  final String? name;
 
-  const SignUpRequested({
-    required this.email,
-    required this.password,
-    this.name,
+  const SignUpStepOneRequested({required this.email, required this.password});
+
+  @override
+  List<Object?> get props => [email, password];
+}
+
+class SignUpStepTwoRequested extends AuthEvent {
+  final String fullName;
+  final String phoneNumber;
+  final String dialCode;
+  final String businessName;
+  final String address;
+
+  const SignUpStepTwoRequested({
+    required this.fullName,
+    required this.phoneNumber,
+    required this.dialCode,
+    required this.businessName,
+    required this.address,
   });
 
   @override
-  List<Object?> get props => [email, password, name];
+  List<Object?> get props => [
+    fullName,
+    phoneNumber,
+    dialCode,
+    businessName,
+    address,
+  ];
+}
+
+class ValidateEmailRequested extends AuthEvent {
+  final String email;
+
+  const ValidateEmailRequested({required this.email});
+
+  @override
+  List<Object?> get props => [email];
+}
+
+class ValidatePasswordRequested extends AuthEvent {
+  final String password;
+  final String? confirmPassword;
+
+  const ValidatePasswordRequested({
+    required this.password,
+    this.confirmPassword,
+  });
+
+  @override
+  List<Object?> get props => [password, confirmPassword];
+}
+
+class TogglePasswordVisibilityRequested extends AuthEvent {
+  final bool isNewPassword;
+  final bool isConfirmPassword;
+
+  const TogglePasswordVisibilityRequested({
+    this.isNewPassword = false,
+    this.isConfirmPassword = false,
+  });
+
+  @override
+  List<Object?> get props => [isNewPassword, isConfirmPassword];
+}
+
+class SelectCountryCodeRequested extends AuthEvent {
+  final int index;
+
+  const SelectCountryCodeRequested({required this.index});
+
+  @override
+  List<Object?> get props => [index];
+}
+
+class SearchCountryCodeRequested extends AuthEvent {
+  final String query;
+
+  const SearchCountryCodeRequested({required this.query});
+
+  @override
+  List<Object?> get props => [query];
+}
+
+class ResetAuthStateRequested extends AuthEvent {
+  const ResetAuthStateRequested();
+}
+
+class LoadCountryCodesRequested extends AuthEvent {
+  const LoadCountryCodesRequested();
 }
 
 class SignOutRequested extends AuthEvent {

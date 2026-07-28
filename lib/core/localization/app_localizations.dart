@@ -56,6 +56,10 @@ const Map<String, String> _en = {
   AppStrings.phoneNumber: 'Phone Number',
   AppStrings.businessName: 'Business Name',
   AppStrings.address: 'Address',
+  AppStrings.step1Of2: 'Step 1 of 2',
+  AppStrings.step2Of2: 'Step 2 of 2',
+  AppStrings.selectCountry: 'Select Country',
+  AppStrings.searchCountry: 'Search Country',
 
   // ─── Dashboard ─────────────────────────────────────────────────────
   AppStrings.exit: 'Exit',
@@ -107,6 +111,10 @@ const Map<String, String> _ar = {
   AppStrings.phoneNumber: 'رقم الهاتف',
   AppStrings.businessName: 'اسم العمل',
   AppStrings.address: 'العنوان',
+  AppStrings.step1Of2: 'الخطوة 1 من 2',
+  AppStrings.step2Of2: 'الخطوة 2 من 2',
+  AppStrings.selectCountry: 'اختر الدولة',
+  AppStrings.searchCountry: 'ابحث عن الدولة',
 
   AppStrings.exit: 'الخروج',
   AppStrings.realyWantToExit: 'هل تريد حقًا الخروج؟',
@@ -157,6 +165,10 @@ const Map<String, String> _fr = {
   AppStrings.phoneNumber: 'Numéro de téléphone',
   AppStrings.businessName: "Nom de l'entreprise",
   AppStrings.address: 'Adresse',
+  AppStrings.step1Of2: 'Étape 1 sur 2',
+  AppStrings.step2Of2: 'Étape 2 sur 2',
+  AppStrings.selectCountry: 'Sélectionner un pays',
+  AppStrings.searchCountry: 'Rechercher un pays',
 
   AppStrings.exit: 'Quitter',
   AppStrings.realyWantToExit: 'Voulez-vous vraiment quitter?',
