@@ -93,6 +93,20 @@ class AppColors {
     colors: [Color(0xFF1E88E5), Color(0xFF1565C0)],
   );
 
+  /// Subtle light gradient used as the dashboard sheet / content area background.
+  static const LinearGradient sheetBackgroundGradientLight = LinearGradient(
+    begin: Alignment(0.00, -1.00),
+    end: Alignment(0, 1),
+    colors: [Color(0xFFE8EBF5), Color(0xFFFBFCFF)],
+  );
+
+  /// Dark variant of the sheet background gradient.
+  static const LinearGradient sheetBackgroundGradientDark = LinearGradient(
+    begin: Alignment(0.00, -1.00),
+    end: Alignment(0, 1),
+    colors: [Color(0xFF1A1A2E), Color(0xFF16213E)],
+  );
+
   // ---------------------------------------------------------------------------
   // ColorScheme presets
   // ---------------------------------------------------------------------------

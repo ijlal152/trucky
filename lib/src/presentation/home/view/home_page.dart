@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_svg/flutter_svg.dart';
+import 'package:trucky/common/widgets/widget_imports.dart';
 
+import '../../../../core/theme/app_colors.dart';
 import '../bloc/home_bloc.dart';
 
 class HomePage extends StatelessWidget {
@@ -10,11 +14,285 @@ class HomePage extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocBuilder<HomeBloc, HomeState>(
       builder: (context, state) {
-        return Scaffold(
-          appBar: AppBar(title: const Text('Home')),
-          body: const Center(child: Text('Home Page')),
+        return PopScope(
+          canPop: false,
+          child: CustomScaffold(
+            body: SizedBox(
+              width: double.infinity,
+              height: double.infinity,
+              child: Stack(
+                children: [
+                  // ── Blue header background ──────────────────────────
+                  Positioned(
+                    top: 0,
+                    left: 0,
+                    right: 0,
+                    bottom: 0,
+                    child: SizedBox(
+                      width: double.infinity, // Ensure full width
+                      height: 300.h, // Your desired height
+                      child: SvgPicture.asset(
+                        'assets/svgs/header_background.svg',
+                        fit: BoxFit.fill, // Try cover or fill
+                      ),
+                    ),
+                  ),
+
+                  // ── Header content ───────────────────────────────────
+                  Positioned(
+                    top: 80.h,
+                    left: 24.w,
+                    right: 24.w,
+                    child: _HomeHeader(),
+                  ),
+
+                  // ── Dashboard sheet ──────────────────────────────────
+                  Positioned(
+                    top: 170.h,
+                    left: 0,
+                    right: 0,
+                    bottom: 0,
+                    child: Container(
+                      height: double.infinity,
+                      decoration: BoxDecoration(
+                        gradient:
+                            Theme.of(context).brightness == Brightness.dark
+                            ? AppColors.sheetBackgroundGradientDark
+                            : AppColors.sheetBackgroundGradientLight,
+                        borderRadius: BorderRadius.only(
+                          topLeft: Radius.circular(30.r),
+                          topRight: Radius.circular(30.r),
+                        ),
+                      ),
+                      child: _DashboardSheet(),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
         );
       },
     );
   }
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+//  Header
+// ─────────────────────────────────────────────────────────────────────────────
+
+class _HomeHeader extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        Row(
+          children: [
+            // Avatar placeholder
+            Container(
+              height: 60.h,
+              width: 60.h,
+              decoration: const BoxDecoration(
+                color: Colors.white24,
+                shape: BoxShape.circle,
+              ),
+              child: Icon(Icons.person, size: 28.sp, color: Colors.white),
+            ),
+            12.horizontalSpace,
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  'Trucky',
+                  style: TextStyle(
+                    fontSize: 20.sp,
+                    fontWeight: FontWeight.w600,
+                    color: Colors.white,
+                  ),
+                ),
+                4.verticalSpace,
+                Text(
+                  'Demo Version',
+                  style: TextStyle(fontSize: 14.sp, color: Colors.white70),
+                ),
+              ],
+            ),
+          ],
+        ),
+        Icon(Icons.settings_outlined, size: 26.sp, color: Colors.white),
+      ],
+    );
+  }
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+//  Dashboard sheet
+// ─────────────────────────────────────────────────────────────────────────────
+
+class _DashboardSheet extends StatelessWidget {
+  const _DashboardSheet();
+
+  final List<_FeatureItem> _features = const [
+    _FeatureItem(icon: Icons.shopping_cart_outlined, label: 'Sales'),
+    _FeatureItem(icon: Icons.shopping_bag_outlined, label: 'Purchases'),
+    _FeatureItem(icon: Icons.people_outline, label: 'Suppliers'),
+    _FeatureItem(icon: Icons.person_outline, label: 'Clients'),
+    _FeatureItem(icon: Icons.inventory_2_outlined, label: 'Products'),
+    _FeatureItem(icon: Icons.account_balance_outlined, label: 'Treasury'),
+    _FeatureItem(icon: Icons.analytics_outlined, label: 'Analysis'),
+  ];
+
+  @override
+  Widget build(BuildContext context) {
+    final cs = Theme.of(context).colorScheme;
+    return Padding(
+      padding: EdgeInsets.symmetric(horizontal: 16.w).copyWith(top: 35.h),
+      child: Column(
+        children: [
+          // First row: Sales, Purchases
+          Row(
+            children: [
+              Expanded(child: _buildFeatureCard(_features[0], cs)),
+              16.horizontalSpace,
+              Expanded(child: _buildFeatureCard(_features[1], cs)),
+            ],
+          ),
+          16.verticalSpace,
+          // Second row: Suppliers, Clients
+          Row(
+            children: [
+              Expanded(child: _buildFeatureCard(_features[2], cs)),
+              16.horizontalSpace,
+              Expanded(child: _buildFeatureCard(_features[3], cs)),
+            ],
+          ),
+          16.verticalSpace,
+          // Third row: Products, Treasury
+          Row(
+            children: [
+              Expanded(child: _buildFeatureCard(_features[4], cs)),
+              16.horizontalSpace,
+              Expanded(child: _buildFeatureCard(_features[5], cs)),
+            ],
+          ),
+          16.verticalSpace,
+          // Analysis – full width
+          _buildAnalysisCard(cs),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildFeatureCard(_FeatureItem item, ColorScheme cs) {
+    return Container(
+      height: 110.h,
+      width: 180.w,
+      // padding: EdgeInsets.only(bottom: 20.h),
+      decoration: BoxDecoration(
+        color: cs.surface,
+        borderRadius: BorderRadius.circular(12.r),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withValues(alpha: 0.04),
+            blurRadius: 8.r,
+            offset: const Offset(0, 2),
+          ),
+        ],
+      ),
+      child: Material(
+        color: Colors.transparent,
+        borderRadius: BorderRadius.circular(14.r),
+        child: InkWell(
+          borderRadius: BorderRadius.circular(14.r),
+          onTap: () {},
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Icon(item.icon, size: 28.sp, color: AppColors.primaryBlue),
+
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text(
+                    ' (0) ',
+                    style: TextStyle(
+                      fontSize: 20.sp,
+                      fontWeight: FontWeight.w700,
+                      color: cs.onSurface,
+                    ),
+                  ),
+                  Text(
+                    item.label,
+                    style: TextStyle(
+                      fontSize: 13.sp,
+                      color: cs.onSurfaceVariant,
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildAnalysisCard(ColorScheme cs) {
+    return Container(
+      height: 100.h,
+      width: double.infinity,
+      decoration: BoxDecoration(
+        color: cs.surface,
+        borderRadius: BorderRadius.circular(14.r),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withValues(alpha: 0.04),
+            blurRadius: 8,
+            offset: const Offset(0, 2),
+          ),
+        ],
+      ),
+      child: Material(
+        color: Colors.transparent,
+        borderRadius: BorderRadius.circular(14.r),
+        child: InkWell(
+          borderRadius: BorderRadius.circular(14.r),
+          onTap: () {},
+          child: Center(
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Icon(
+                  Icons.analytics_outlined,
+                  size: 24.sp,
+                  color: AppColors.primaryBlue,
+                ),
+                8.horizontalSpace,
+                Text(
+                  'Analysis',
+                  style: TextStyle(
+                    fontSize: 16.sp,
+                    fontWeight: FontWeight.w600,
+                    color: cs.onSurface,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+//  Data model
+// ─────────────────────────────────────────────────────────────────────────────
+
+class _FeatureItem {
+  final IconData icon;
+  final String label;
+
+  const _FeatureItem({required this.icon, required this.label});
 }
