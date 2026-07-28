@@ -5,7 +5,6 @@ import 'package:go_router/go_router.dart';
 import 'package:trucky/common/widgets/widget_imports.dart';
 import 'package:trucky/core/localization/app_strings.dart';
 import 'package:trucky/core/localization/languages_services.dart';
-import 'package:trucky/core/theme/app_colors.dart';
 import 'package:trucky/src/presentation/routes/app_routes.dart';
 
 import '../bloc/auth_bloc.dart';
@@ -34,29 +33,32 @@ class SignInPage extends StatelessWidget {
       },
       child: PopScope(
         canPop: false,
-        child: Scaffold(
-          backgroundColor: AppColors.backgroundLight,
-          appBar: AppBar(title: const Text('Sign In')),
-          body: SingleChildScrollView(
-            physics: const BouncingScrollPhysics(),
-            padding: EdgeInsets.symmetric(horizontal: 24.w),
-            child: Padding(
-              padding: EdgeInsets.all(16.r),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.start,
-                children: [
-                  Container(height: 145.h, width: 145.h, color: Colors.white),
-                  20.verticalSpace,
-                  Align(
-                    alignment: Alignment.topLeft,
-                    child: LabelWidget(
-                      text: context.tr(AppStrings.signIn),
-                      //fontFamily: Constants.interBold,
-                      textSize: 32.sp,
-                      textColor: AppColors.black,
+        child: CustomScaffold(
+          appBar: const CustomAppBar(automaticallyImplyLeading: false),
+          body: SafeArea(
+            child: SingleChildScrollView(
+              physics: const BouncingScrollPhysics(),
+              padding: EdgeInsets.symmetric(horizontal: 24.w),
+              child: Padding(
+                padding: EdgeInsets.all(16.r),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: [
+                    Container(
+                      height: 145.h,
+                      width: 145.h,
+                      color: Theme.of(context).colorScheme.surface,
                     ),
-                  ),
-                ],
+                    20.verticalSpace,
+                    Align(
+                      alignment: Alignment.topLeft,
+                      child: LabelWidget(
+                        text: context.tr(AppStrings.signIn),
+                        textSize: 32.sp,
+                      ),
+                    ),
+                  ],
+                ),
               ),
             ),
           ),

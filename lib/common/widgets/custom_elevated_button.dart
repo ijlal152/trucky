@@ -31,6 +31,8 @@ class CustomElevatedButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final isDisabled = isLoading || onPressed == null;
+    final theme = Theme.of(context);
+    final colorScheme = theme.colorScheme;
 
     return SizedBox(
       width: fullWidth ? double.infinity : width,
@@ -38,9 +40,9 @@ class CustomElevatedButton extends StatelessWidget {
       child: ElevatedButton(
         onPressed: isDisabled ? null : onPressed,
         style: ElevatedButton.styleFrom(
-          backgroundColor: backgroundColor ?? AppColors.primaryBlue,
-          foregroundColor: foregroundColor ?? AppColors.white,
-          disabledBackgroundColor: (backgroundColor ?? AppColors.primaryBlue)
+          backgroundColor: backgroundColor ?? colorScheme.primary,
+          foregroundColor: foregroundColor ?? colorScheme.onPrimary,
+          disabledBackgroundColor: (backgroundColor ?? colorScheme.primary)
               .withValues(alpha: 0.4),
           elevation: 0,
           shape: RoundedRectangleBorder(
@@ -51,9 +53,11 @@ class CustomElevatedButton extends StatelessWidget {
             ? SizedBox(
                 width: 22.w,
                 height: 22.h,
-                child: const CircularProgressIndicator(
+                child: CircularProgressIndicator(
                   strokeWidth: 2.5,
-                  valueColor: AlwaysStoppedAnimation<Color>(AppColors.white),
+                  valueColor: AlwaysStoppedAnimation<Color>(
+                    colorScheme.onPrimary,
+                  ),
                 ),
               )
             : Row(
@@ -70,7 +74,7 @@ class CustomElevatedButton extends StatelessWidget {
                       fontFamily: 'Gilroy-Bold',
                       fontSize: 16.sp,
                       fontWeight: FontWeight.w600,
-                      color: foregroundColor ?? AppColors.white,
+                      color: foregroundColor ?? colorScheme.onPrimary,
                     ),
                   ),
                   if (suffixIcon != null) ...[

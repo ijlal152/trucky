@@ -3,7 +3,7 @@ part of 'widget_imports.dart';
 class LabelWidget extends StatelessWidget {
   final String text;
   final double textSize;
-  final Color textColor;
+  final Color? textColor;
   final TextAlign textAlign;
   final FontWeight fontWeight;
   final TextDirection? textDirection;
@@ -15,7 +15,7 @@ class LabelWidget extends StatelessWidget {
     this.text = "",
     this.fontWeight = FontWeight.w600,
     this.textAlign = TextAlign.left,
-    this.textColor = const Color.fromRGBO(4, 12, 34, 1),
+    this.textColor,
     this.textSize = 14,
     this.maxLines,
     this.overflow,
@@ -35,7 +35,7 @@ class LabelWidget extends StatelessWidget {
         fontSize: textSize,
         fontFamily: fontFamily,
         fontWeight: fontWeight,
-        color: textColor,
+        color: textColor ?? Theme.of(context).colorScheme.onSurface,
       ),
     );
   }

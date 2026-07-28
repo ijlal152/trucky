@@ -30,7 +30,6 @@ class NavigatableRowWithImage extends StatelessWidget {
               text: title,
               textSize: 17.sp,
               fontWeight: FontWeight.w600,
-              textColor: Colors.black,
             ),
           ],
         ),

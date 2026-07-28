@@ -4,6 +4,7 @@ Future<DateTime?> customDatePicker(
   BuildContext context,
   DateTime? selectedDate,
 ) async {
+  final theme = Theme.of(context);
   final DateTime? pickedDate = await showDatePicker(
     context: context,
     initialDate: DateTime.now(),
@@ -11,10 +12,10 @@ Future<DateTime?> customDatePicker(
     lastDate: DateTime(2050, 12),
     builder: (context, child) {
       return Theme(
-        data: ThemeData.light().copyWith(
-          colorScheme: const ColorScheme.light(
-            primary: Color.fromRGBO(43, 136, 216, 1),
-            onPrimary: Colors.white,
+        data: theme.copyWith(
+          colorScheme: theme.colorScheme.copyWith(
+            primary: AppColors.primaryBlue,
+            onPrimary: AppColors.white,
           ),
         ),
         child: child!,
@@ -30,6 +31,7 @@ Future<void> customDatePicker2(
   Function(DateTime) onDateSelected, [
   DateTime? initialDate,
 ]) async {
+  final theme = Theme.of(context);
   final DateTime? pickedDate = await showDatePicker(
     context: context,
     initialDate: initialDate ?? DateTime.now(),
@@ -37,10 +39,10 @@ Future<void> customDatePicker2(
     lastDate: DateTime(2050, 12),
     builder: (context, child) {
       return Theme(
-        data: ThemeData.light().copyWith(
-          colorScheme: const ColorScheme.light(
-            primary: Color.fromRGBO(43, 136, 216, 1),
-            onPrimary: Colors.white,
+        data: theme.copyWith(
+          colorScheme: theme.colorScheme.copyWith(
+            primary: AppColors.primaryBlue,
+            onPrimary: AppColors.white,
           ),
         ),
         child: child!,

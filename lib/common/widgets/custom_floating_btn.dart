@@ -14,16 +14,18 @@ class CustomFloatingBtn extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
+
     return SizedBox(
       height: 56.h,
       width: 56.h,
       child: FloatingActionButton(
         onPressed: onTap,
         heroTag: null,
-        backgroundColor: const Color.fromRGBO(43, 136, 216, 1),
+        backgroundColor: colorScheme.primary,
         child: imgPath != null
             ? SvgPicture.asset(imgPath!)
-            : Icon(icon, size: 22.h, color: Colors.white),
+            : Icon(icon, size: 22.h, color: colorScheme.onPrimary),
       ),
     );
   }

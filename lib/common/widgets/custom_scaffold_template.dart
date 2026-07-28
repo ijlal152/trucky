@@ -18,17 +18,28 @@ class CustomScaffold extends StatelessWidget {
     this.backgroundColor = Colors.transparent,
     this.extendBodyBehindAppBar = false,
     this.resizeToAvoidBottomInset,
-    this.gradiantBackground = const LinearGradient(
-      begin: Alignment(0.00, -1.00),
-      end: Alignment(0, 1),
-      colors: [Color(0xFFE8EBF5), Color(0xFFFBFCFF)],
-    ),
+    this.gradiantBackground,
   });
+
+  LinearGradient _defaultGradient(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    return isDark
+        ? const LinearGradient(
+            begin: Alignment(0.00, -1.00),
+            end: Alignment(0, 1),
+            colors: [Color(0xFF1E1E2E), Color(0xFF121212)],
+          )
+        : const LinearGradient(
+            begin: Alignment(0.00, -1.00),
+            end: Alignment(0, 1),
+            colors: [Color(0xFFE8EBF5), Color(0xFFFBFCFF)],
+          );
+  }
 
   @override
   Widget build(BuildContext context) {
     return GradientBackground(
-      gradient: gradiantBackground,
+      gradient: gradiantBackground ?? _defaultGradient(context),
       child: GestureDetector(
         onTap: () {
           WidgetsBinding.instance.focusManager.primaryFocus?.unfocus();

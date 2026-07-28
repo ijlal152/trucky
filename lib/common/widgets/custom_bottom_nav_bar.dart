@@ -7,7 +7,7 @@ class CustomBottomNavBarWidget extends StatelessWidget {
   final double borderRadius;
   const CustomBottomNavBarWidget({
     super.key,
-    this.navBarColor = Colors.transparent,
+    this.navBarColor,
     this.padding,
     this.borderRadius = 0,
     this.widget,
@@ -18,7 +18,7 @@ class CustomBottomNavBarWidget extends StatelessWidget {
     return Container(
       padding: EdgeInsets.only(bottom: 30.h),
       decoration: BoxDecoration(
-        color: navBarColor,
+        color: navBarColor ?? Theme.of(context).colorScheme.surface,
         borderRadius: BorderRadius.only(
           topLeft: Radius.circular(borderRadius),
           topRight: Radius.circular(borderRadius),

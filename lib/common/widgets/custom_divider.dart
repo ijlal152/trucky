@@ -1,7 +1,7 @@
 part of "widget_imports.dart";
 
-Divider dividerWidget() {
-  return Divider(color: Colors.black.withValues(alpha: 0.1));
+Divider dividerWidget(BuildContext context) {
+  return Divider(color: Theme.of(context).colorScheme.outlineVariant);
 }
 
 class DividerWidget extends StatelessWidget {
@@ -10,7 +10,7 @@ class DividerWidget extends StatelessWidget {
   final double paddingV;
   final double padddingH;
   final double radius;
-  final Color color;
+  final Color? color;
   const DividerWidget({
     super.key,
     this.width = 48,
@@ -18,7 +18,7 @@ class DividerWidget extends StatelessWidget {
     this.padddingH = 0,
     this.height = 4,
     this.radius = 2,
-    this.color = Colors.grey,
+    this.color,
   });
 
   @override
@@ -27,7 +27,7 @@ class DividerWidget extends StatelessWidget {
       width: width,
       height: height,
       decoration: BoxDecoration(
-        color: color,
+        color: color ?? Theme.of(context).colorScheme.outlineVariant,
         borderRadius: BorderRadius.circular(radius),
       ),
       padding: EdgeInsets.symmetric(vertical: paddingV, horizontal: padddingH),

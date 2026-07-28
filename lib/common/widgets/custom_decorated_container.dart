@@ -4,7 +4,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 class DecoratedContainer extends StatelessWidget {
   final Widget? child;
   final double borderRadius;
-  final Color color;
+  final Color? color;
   final EdgeInsets? padding;
   final BoxShape shape;
   final double? height;
@@ -16,7 +16,7 @@ class DecoratedContainer extends StatelessWidget {
   final Border? border;
   const DecoratedContainer({
     super.key,
-    this.color = Colors.white,
+    this.color,
     this.padding,
     this.margin = EdgeInsets.zero,
     this.borderRadius = 10,
@@ -44,7 +44,7 @@ class DecoratedContainer extends StatelessWidget {
             ? BorderRadius.circular(borderRadius.r)
             : customBorderRadius,
         border: border,
-        color: color,
+        color: color ?? Theme.of(context).colorScheme.surface,
       ),
       child: child,
     );
