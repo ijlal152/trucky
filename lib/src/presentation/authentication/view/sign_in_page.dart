@@ -141,9 +141,7 @@ class _SignInPageState extends State<SignInPage> {
                       text: 'Forgot Password ? Click here',
                       textColor: linkColor,
                       textSize: 15.sp,
-                      onTap: () {
-                        // TODO: Navigate to forgot password
-                      },
+                      onTap: () {},
                     ),
                     60.verticalSpace,
                     BlocBuilder<AuthBloc, AuthState>(
@@ -152,8 +150,8 @@ class _SignInPageState extends State<SignInPage> {
                           text: context.tr(AppStrings.continueBtn),
                           isLoading: state.status == AuthStatus.loading,
                           onPressed: _onContinue,
-                          backgroundColor: buttonBackground,
-                          foregroundColor: buttonForeground,
+                          //backgroundColor: buttonBackground,
+                          //foregroundColor: buttonForeground,
                           height: 56.h,
                           radius: 100.r,
                         );

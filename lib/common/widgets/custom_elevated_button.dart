@@ -14,7 +14,7 @@ class CustomElevatedButton extends StatelessWidget {
   final bool fullWidth;
 
   const CustomElevatedButton({
-    Key? key,
+    super.key,
     required this.text,
     this.onPressed,
     this.isLoading = false,
@@ -26,7 +26,7 @@ class CustomElevatedButton extends StatelessWidget {
     this.prefixIcon,
     this.suffixIcon,
     this.fullWidth = true,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
