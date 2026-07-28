@@ -1,7 +1,7 @@
 import 'package:injectable/injectable.dart';
 
-import '../../../domain/repositories/auth_rep.dart';
-import '../../datasource/auth_datasource/auth_datasource.dart';
+import '../../domain/repositories/auth_rep.dart';
+import '../datasource/auth_datasource/auth_datasource.dart';
 
 @LazySingleton(as: AuthRepo)
 class AuthRepoImpl implements AuthRepo {
