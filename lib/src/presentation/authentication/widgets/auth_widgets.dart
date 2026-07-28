@@ -6,10 +6,7 @@ import 'package:trucky/common/widgets/widget_imports.dart';
 class ShowStepsWidget extends StatelessWidget {
   final String title;
 
-  const ShowStepsWidget({
-    super.key,
-    required this.title,
-  });
+  const ShowStepsWidget({super.key, required this.title});
 
   @override
   Widget build(BuildContext context) {
@@ -80,7 +77,9 @@ class TermsOfUseAndPrivacyPolicy extends StatelessWidget {
     final linkColor = const Color(0xFF0093B9);
 
     return Padding(
-      padding: EdgeInsets.symmetric(horizontal: 20.w),
+      padding: EdgeInsets.symmetric(
+        horizontal: 40.w,
+      ).copyWith(top: 10.h, bottom: 20.h),
       child: RichText(
         textAlign: TextAlign.center,
         text: TextSpan(

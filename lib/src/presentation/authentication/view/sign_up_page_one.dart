@@ -39,23 +39,17 @@ class _SignUpPageOneState extends State<SignUpPageOne> {
   void _onContinue() {
     if (_formKey.currentState?.validate() ?? false) {
       context.read<AuthBloc>().add(
-            SignUpStepOneRequested(
-              email: _emailController.text.trim(),
-              password: _passwordController.text,
-            ),
-          );
+        SignUpStepOneRequested(
+          email: _emailController.text.trim(),
+          password: _passwordController.text,
+        ),
+      );
     }
   }
 
   @override
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
-    final isDark = Theme.of(context).brightness == Brightness.dark;
-
-    final buttonBackground = isDark
-        ? colorScheme.surfaceContainerHighest
-        : const Color(0xFFE8EBEF);
-    final buttonForeground = colorScheme.onSurface;
 
     return BlocListener<AuthBloc, AuthState>(
       listener: (context, state) {
@@ -75,107 +69,105 @@ class _SignUpPageOneState extends State<SignUpPageOne> {
             backgroundColor: Colors.transparent,
             foregroundColor: colorScheme.onSurface,
             elevation: 0,
-            actions: [
-              ShowStepsWidget(title: context.tr(AppStrings.step1Of2)),
-            ],
+            actions: [ShowStepsWidget(title: context.tr(AppStrings.step1Of2))],
           ),
-          body: SafeArea(
-            child: Form(
-              key: _formKey,
-              child: SingleChildScrollView(
-                physics: const BouncingScrollPhysics(),
-                padding: EdgeInsets.symmetric(horizontal: 26.w),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    73.verticalSpace,
-                    Container(
-                      height: 145.h,
-                      width: 145.h,
-                      decoration: BoxDecoration(
-                        color: colorScheme.surface,
-                        borderRadius: BorderRadius.circular(8.r),
-                      ),
+          body: Form(
+            key: _formKey,
+            child: SingleChildScrollView(
+              physics: const BouncingScrollPhysics(),
+              padding: EdgeInsets.symmetric(horizontal: 20.w),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  73.verticalSpace,
+                  Container(
+                    height: 145.h,
+                    width: 145.h,
+                    decoration: BoxDecoration(
+                      color: colorScheme.surface,
+                      borderRadius: BorderRadius.circular(8.r),
                     ),
-                    22.verticalSpace,
-                    Align(
-                      alignment: AlignmentDirectional.topStart,
-                      child: LabelWidget(
-                        text: context.tr(AppStrings.signUp),
-                        textSize: 32.sp,
-                        fontWeight: FontWeight.w700,
-                        textColor: colorScheme.onSurface,
-                      ),
+                  ),
+                  22.verticalSpace,
+                  Align(
+                    alignment: AlignmentDirectional.topStart,
+                    child: LabelWidget(
+                      text: context.tr(AppStrings.signUp),
+                      textSize: 32.sp,
+                      fontWeight: FontWeight.w700,
+                      textColor: colorScheme.onSurface,
                     ),
-                    10.verticalSpace,
-                    Align(
-                      alignment: AlignmentDirectional.topStart,
-                      child: LabelWidget(
-                        text: context.tr(AppStrings.weAskForYourInfo),
-                        fontWeight: FontWeight.w500,
-                        textSize: 15.sp,
-                        textColor: colorScheme.onSurfaceVariant,
-                      ),
+                  ),
+                  10.verticalSpace,
+                  Align(
+                    alignment: AlignmentDirectional.topStart,
+                    child: LabelWidget(
+                      text: context.tr(AppStrings.weAskForYourInfo),
+                      fontWeight: FontWeight.w500,
+                      textSize: 15.sp,
+                      textColor: colorScheme.onSurfaceVariant,
                     ),
-                    20.verticalSpace,
-                    CustomTextFormField(
-                      controller: _emailController,
-                      hintText: context.tr(AppStrings.emailAddress),
-                      labelText: context.tr(AppStrings.emailAddress),
-                      keyboardType: TextInputType.emailAddress,
-                      textInputAction: TextInputAction.next,
-                      onChanged: _onEmailChanged,
-                      validator: (value) {
-                        if (value == null || value.trim().isEmpty) {
-                          return 'Email is required';
-                        }
-                        final emailRegex = RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$');
-                        if (!emailRegex.hasMatch(value.trim())) {
-                          return 'Invalid email format';
-                        }
-                        return null;
-                      },
-                    ),
-                    BlocBuilder<AuthBloc, AuthState>(
-                      builder: (context, state) {
-                        return TextFieldValidationError(
-                          requiredParameter: 'Email is not valid',
-                          isValid: state.isValidEmail,
-                        );
-                      },
-                    ),
-                    10.verticalSpace,
-                    BlocBuilder<AuthBloc, AuthState>(
-                      builder: (context, state) {
-                        return CustomTextFormField(
-                          controller: _passwordController,
-                          hintText: context.tr(AppStrings.password),
-                          labelText: context.tr(AppStrings.password),
-                          obscureText: state.passwordObscure,
-                          textInputAction: TextInputAction.done,
-                          onChanged: _onPasswordChanged,
-                          suffixIcon: state.passwordObscure
-                              ? Icons.visibility_off
-                              : Icons.visibility,
-                          onSuffixTap: () => context.read<AuthBloc>().add(
-                                const TogglePasswordVisibilityRequested(),
-                              ),
-                        );
-                      },
-                    ),
-                    20.verticalSpace,
-                    BlocBuilder<AuthBloc, AuthState>(
-                      builder: (context, state) {
-                        return PasswordValidationWidget(
-                          isValidPasswordLength: state.isValidPasswordLength,
-                          hasUppercaseSymbol: state.hasUppercaseSymbol,
-                          hasANumber: state.hasANumber,
-                        );
-                      },
-                    ),
-                    30.verticalSpace,
-                  ],
-                ),
+                  ),
+                  20.verticalSpace,
+                  CustomTextFormField(
+                    controller: _emailController,
+                    hintText: context.tr(AppStrings.emailAddress),
+                    labelText: context.tr(AppStrings.emailAddress),
+                    keyboardType: TextInputType.emailAddress,
+                    textInputAction: TextInputAction.next,
+                    onChanged: _onEmailChanged,
+                    validator: (value) {
+                      if (value == null || value.trim().isEmpty) {
+                        return 'Email is required';
+                      }
+                      final emailRegex = RegExp(
+                        r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$',
+                      );
+                      if (!emailRegex.hasMatch(value.trim())) {
+                        return 'Invalid email format';
+                      }
+                      return null;
+                    },
+                  ),
+                  BlocBuilder<AuthBloc, AuthState>(
+                    builder: (context, state) {
+                      return TextFieldValidationError(
+                        requiredParameter: 'Email is not valid',
+                        isValid: state.isValidEmail,
+                      );
+                    },
+                  ),
+                  10.verticalSpace,
+                  BlocBuilder<AuthBloc, AuthState>(
+                    builder: (context, state) {
+                      return CustomTextFormField(
+                        controller: _passwordController,
+                        hintText: context.tr(AppStrings.password),
+                        labelText: context.tr(AppStrings.password),
+                        obscureText: state.passwordObscure,
+                        textInputAction: TextInputAction.done,
+                        onChanged: _onPasswordChanged,
+                        suffixIcon: state.passwordObscure
+                            ? Icons.visibility_off
+                            : Icons.visibility,
+                        onSuffixTap: () => context.read<AuthBloc>().add(
+                          const TogglePasswordVisibilityRequested(),
+                        ),
+                      );
+                    },
+                  ),
+                  20.verticalSpace,
+                  BlocBuilder<AuthBloc, AuthState>(
+                    builder: (context, state) {
+                      return PasswordValidationWidget(
+                        isValidPasswordLength: state.isValidPasswordLength,
+                        hasUppercaseSymbol: state.hasUppercaseSymbol,
+                        hasANumber: state.hasANumber,
+                      );
+                    },
+                  ),
+                  30.verticalSpace,
+                ],
               ),
             ),
           ),
@@ -187,22 +179,22 @@ class _SignUpPageOneState extends State<SignUpPageOne> {
                   btnText: context.tr(AppStrings.signInHere),
                   text: context.tr(AppStrings.alreadyHaveAnAccount),
                   onTap: () {
-                    context.read<AuthBloc>().add(const ResetAuthStateRequested());
+                    context.read<AuthBloc>().add(
+                      const ResetAuthStateRequested(),
+                    );
                     context.goNamed(AppRoutes.signIn.name);
                   },
                 ),
                 const TermsOfUseAndPrivacyPolicy(),
-                20.verticalSpace,
                 BlocBuilder<AuthBloc, AuthState>(
                   builder: (context, state) {
-                    return CustomElevatedButton(
-                      text: context.tr(AppStrings.continueBtn),
-                      isLoading: state.isLoading,
-                      onPressed: _onContinue,
-                      backgroundColor: buttonBackground,
-                      foregroundColor: buttonForeground,
-                      height: 56.h,
-                      radius: 100.r,
+                    return Padding(
+                      padding: EdgeInsets.symmetric(horizontal: 20.w),
+                      child: CustomElevatedButton(
+                        text: context.tr(AppStrings.continueBtn),
+                        isLoading: state.isLoading,
+                        onPressed: _onContinue,
+                      ),
                     );
                   },
                 ),
