@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'package:trucky/src/presentation/routes/app_routes.dart';
 
 import '../bloc/auth_bloc.dart';
 
@@ -13,7 +14,7 @@ class SignInPage extends StatelessWidget {
       listener: (context, state) {
         switch (state.status) {
           case AuthStatus.authenticated:
-            context.goNamed('home');
+            context.goNamed(AppRoutes.home.name);
             break;
           case AuthStatus.error:
             ScaffoldMessenger.of(context).showSnackBar(
