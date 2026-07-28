@@ -1,3 +1,5 @@
+import 'package:injectable/injectable.dart';
+
 import 'client_supp_datasource.dart';
 
 @LazySingleton(as: ClientSuppDataSource)
