@@ -12,6 +12,7 @@ class CustomElevatedButton extends StatelessWidget {
   final Widget? prefixIcon;
   final Widget? suffixIcon;
   final bool fullWidth;
+  final bool isDisabled;
 
   const CustomElevatedButton({
     super.key,
@@ -26,11 +27,12 @@ class CustomElevatedButton extends StatelessWidget {
     this.prefixIcon,
     this.suffixIcon,
     this.fullWidth = true,
+    this.isDisabled = false,
   });
 
   @override
   Widget build(BuildContext context) {
-    final isDisabled = isLoading || onPressed == null;
+    // final isDisabled = isLoading || onPressed == null;
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
 
