@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:trucky/src/presentation/analysis/view/analysis_page.dart';
 import 'package:trucky/src/presentation/clients/view/clients_page.dart';
+import 'package:trucky/src/presentation/products/view/add_product_page.dart';
 import 'package:trucky/src/presentation/products/view/all_products_page.dart';
+import 'package:trucky/src/presentation/products/view/product_dashboard_page.dart';
 import 'package:trucky/src/presentation/purchases/view/purchases_page.dart';
 import 'package:trucky/src/presentation/routes/app_routes.dart';
 import 'package:trucky/src/presentation/sales/view/sales_page.dart';
@@ -56,6 +58,21 @@ class AppRouter {
         path: AppRoutes.products.path,
         name: AppRoutes.products.name,
         builder: (context, state) => const AllProductsPage(),
+        routes: [
+          GoRoute(
+            path: AppRoutes.addProduct.path.replaceFirst('/products/', ''),
+            name: AppRoutes.addProduct.name,
+            builder: (context, state) => const AddProductPage(),
+          ),
+          GoRoute(
+            path: AppRoutes.productDashboard.path.replaceFirst(
+              '/products/',
+              '',
+            ),
+            name: AppRoutes.productDashboard.name,
+            builder: (context, state) => const ProductDashboardPage(),
+          ),
+        ],
       ),
       GoRoute(
         path: AppRoutes.sales.path,

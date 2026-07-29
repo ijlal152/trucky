@@ -10,3 +10,11 @@ abstract class ProductsEvent extends Equatable {
 class LoadProducts extends ProductsEvent {
   const LoadProducts();
 }
+
+class ToggleBalanceVisibility extends ProductsEvent {
+  const ToggleBalanceVisibility();
+}
+
+class CalculateTotalStockValue extends ProductsEvent {
+  const CalculateTotalStockValue();
+}

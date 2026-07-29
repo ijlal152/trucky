@@ -7,6 +7,8 @@ part 'products_state.dart';
 class ProductsBloc extends Bloc<ProductsEvent, ProductsState> {
   ProductsBloc() : super(const ProductsState()) {
     on<LoadProducts>(_onLoadProducts);
+    on<ToggleBalanceVisibility>(_onToggleBalanceVisibility);
+    on<CalculateTotalStockValue>(_onCalculateTotalStockValue);
   }
 
   Future<void> _onLoadProducts(
@@ -21,5 +23,20 @@ class ProductsBloc extends Bloc<ProductsEvent, ProductsState> {
     } catch (e) {
       emit(state.copyWith(status: ProductsStatus.error, message: e.toString()));
     }
+  }
+
+  void _onToggleBalanceVisibility(
+    ToggleBalanceVisibility event,
+    Emitter<ProductsState> emit,
+  ) {
+    emit(state.copyWith(hideBalance: !state.hideBalance));
+  }
+
+  Future<void> _onCalculateTotalStockValue(
+    CalculateTotalStockValue event,
+    Emitter<ProductsState> emit,
+  ) async {
+    // TODO: Calculate total stock value from actual products
+    emit(state.copyWith(totalStockValue: 0.0));
   }
 }
