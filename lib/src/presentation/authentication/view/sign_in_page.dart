@@ -145,7 +145,7 @@ class _SignInPageState extends State<SignInPage> {
           ),
           bottomNavigationBar: CustomBottomNavBarWidget(
             navBarColor: Colors.transparent,
-            padding: EdgeInsets.symmetric(vertical: 30.h, horizontal: 16.w),
+            padding: EdgeInsets.symmetric(vertical: 30.h, horizontal: 20.w),
             widget: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
@@ -163,10 +163,6 @@ class _SignInPageState extends State<SignInPage> {
                       text: context.tr(AppStrings.continueBtn),
                       isLoading: state.status == AuthStatus.loading,
                       onPressed: _onContinue,
-                      //backgroundColor: buttonBackground,
-                      //foregroundColor: buttonForeground,
-                      height: 56.h,
-                      radius: 100.r,
                     );
                   },
                 ),

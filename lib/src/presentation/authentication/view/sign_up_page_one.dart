@@ -173,7 +173,7 @@ class _SignUpPageOneState extends State<SignUpPageOne> {
           ),
           bottomNavigationBar: CustomBottomNavBarWidget(
             navBarColor: Colors.transparent,
-            padding: EdgeInsets.symmetric(vertical: 30.h),
+            padding: EdgeInsets.symmetric(vertical: 30.h, horizontal: 20.w),
             widget: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
@@ -190,13 +190,10 @@ class _SignUpPageOneState extends State<SignUpPageOne> {
                 const TermsOfUseAndPrivacyPolicy(),
                 BlocBuilder<AuthBloc, AuthState>(
                   builder: (context, state) {
-                    return Padding(
-                      padding: EdgeInsets.symmetric(horizontal: 20.w),
-                      child: CustomElevatedButton(
-                        text: context.tr(AppStrings.continueBtn),
-                        isLoading: state.isLoading,
-                        onPressed: _onContinue,
-                      ),
+                    return CustomElevatedButton(
+                      text: context.tr(AppStrings.continueBtn),
+                      isLoading: state.isLoading,
+                      onPressed: _onContinue,
                     );
                   },
                 ),
