@@ -55,7 +55,9 @@ class _SignInPageState extends State<SignInPage> {
             break;
           case AuthStatus.error:
             ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(content: Text(state.message ?? 'An error occurred')),
+              SnackBar(
+                content: Text(state.errorMessage ?? 'An error occurred'),
+              ),
             );
             break;
           case AuthStatus.initial:

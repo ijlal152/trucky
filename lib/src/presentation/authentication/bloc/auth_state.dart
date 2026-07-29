@@ -17,8 +17,10 @@ class AuthState extends Equatable {
   final String? fullName;
   final String? phoneNumber;
   final String? dialCode;
+  final String currency;
   final String? businessName;
   final String? address;
+  final String? profilePicture;
   final bool isLoading;
   final bool isNameRequired;
   final bool isPhoneRequired;
@@ -37,6 +39,7 @@ class AuthState extends Equatable {
   final List<CountryCodeModel> filteredCountryCodes;
   final String? errorMessage;
   final String? successMessage;
+  final UserEntity? currentUser;
 
   const AuthState({
     this.status = AuthStatus.initial,
@@ -46,8 +49,10 @@ class AuthState extends Equatable {
     this.fullName,
     this.phoneNumber,
     this.dialCode = '+213',
+    this.currency = 'DZD',
     this.businessName,
     this.address,
+    this.profilePicture,
     this.isLoading = false,
     this.isNameRequired = false,
     this.isPhoneRequired = false,
@@ -66,6 +71,7 @@ class AuthState extends Equatable {
     this.filteredCountryCodes = const [],
     this.errorMessage,
     this.successMessage,
+    this.currentUser,
   });
 
   AuthState copyWith({
@@ -76,8 +82,10 @@ class AuthState extends Equatable {
     String? fullName,
     String? phoneNumber,
     String? dialCode,
+    String? currency,
     String? businessName,
     String? address,
+    String? profilePicture,
     bool? isLoading,
     bool? isNameRequired,
     bool? isPhoneRequired,
@@ -96,6 +104,7 @@ class AuthState extends Equatable {
     List<CountryCodeModel>? filteredCountryCodes,
     String? errorMessage,
     String? successMessage,
+    UserEntity? currentUser,
   }) {
     return AuthState(
       status: status ?? this.status,
@@ -105,8 +114,10 @@ class AuthState extends Equatable {
       fullName: fullName ?? this.fullName,
       phoneNumber: phoneNumber ?? this.phoneNumber,
       dialCode: dialCode ?? this.dialCode,
+      currency: currency ?? this.currency,
       businessName: businessName ?? this.businessName,
       address: address ?? this.address,
+      profilePicture: profilePicture ?? this.profilePicture,
       isLoading: isLoading ?? this.isLoading,
       isNameRequired: isNameRequired ?? this.isNameRequired,
       isPhoneRequired: isPhoneRequired ?? this.isPhoneRequired,
@@ -127,6 +138,7 @@ class AuthState extends Equatable {
       filteredCountryCodes: filteredCountryCodes ?? this.filteredCountryCodes,
       errorMessage: errorMessage ?? this.errorMessage,
       successMessage: successMessage ?? this.successMessage,
+      currentUser: currentUser ?? this.currentUser,
     );
   }
 
@@ -139,8 +151,10 @@ class AuthState extends Equatable {
     fullName,
     phoneNumber,
     dialCode,
+    currency,
     businessName,
     address,
+    profilePicture,
     isLoading,
     isNameRequired,
     isPhoneRequired,
@@ -159,6 +173,7 @@ class AuthState extends Equatable {
     filteredCountryCodes,
     errorMessage,
     successMessage,
+    currentUser,
   ];
 }
 

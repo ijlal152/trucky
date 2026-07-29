@@ -116,3 +116,16 @@ class LoadCountryCodesRequested extends AuthEvent {
 class SignOutRequested extends AuthEvent {
   const SignOutRequested();
 }
+
+/// Fired on app start to check for a persisted session.
+class RestoreSessionRequested extends AuthEvent {
+  const RestoreSessionRequested();
+}
+
+/// Fired when the user picks a profile image during sign up.
+class UpdateProfilePictureRequested extends AuthEvent {
+  final String? path;
+  const UpdateProfilePictureRequested(this.path);
+  @override
+  List<Object?> get props => [path];
+}

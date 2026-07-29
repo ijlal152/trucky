@@ -3,12 +3,37 @@ import 'dart:convert';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:injectable/injectable.dart';
+
+import '../../../data/repo_impl/auth_repo_impl.dart';
+import '../../../domain/entities/user_entity.dart';
+import '../../../domain/usecases/auth_usecases/check_user_exists_uc.dart';
+import '../../../domain/usecases/auth_usecases/load_user_session_uc.dart';
+import '../../../domain/usecases/auth_usecases/logout_uc.dart';
+import '../../../domain/usecases/auth_usecases/save_user_session_uc.dart';
+import '../../../domain/usecases/auth_usecases/sign_in_uc.dart';
+import '../../../domain/usecases/auth_usecases/sign_up_uc.dart';
 
 part 'auth_event.dart';
 part 'auth_state.dart';
 
+@injectable
 class AuthBloc extends Bloc<AuthEvent, AuthState> {
-  AuthBloc() : super(const AuthState()) {
+  final SignInUseCase _signInUseCase;
+  final SignUpUseCase _signUpUseCase;
+  final LogoutUseCase _logoutUseCase;
+  final CheckUserExistsUseCase _checkUserExistsUseCase;
+  final SaveUserSessionUseCase _saveUserSessionUseCase;
+  final LoadUserSessionUseCase _loadUserSessionUseCase;
+
+  AuthBloc(
+    this._signInUseCase,
+    this._signUpUseCase,
+    this._logoutUseCase,
+    this._checkUserExistsUseCase,
+    this._saveUserSessionUseCase,
+    this._loadUserSessionUseCase,
+  ) : super(const AuthState()) {
     on<SignInRequested>(_onSignInRequested);
     on<SignUpStepOneRequested>(_onSignUpStepOneRequested);
     on<SignUpStepTwoRequested>(_onSignUpStepTwoRequested);
@@ -20,8 +45,14 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     on<ResetAuthStateRequested>(_onResetAuthStateRequested);
     on<SignOutRequested>(_onSignOutRequested);
     on<LoadCountryCodesRequested>(_onLoadCountryCodesRequested);
+    on<RestoreSessionRequested>(_onRestoreSessionRequested);
+    on<UpdateProfilePictureRequested>(_onUpdateProfilePictureRequested);
+
     add(const LoadCountryCodesRequested());
+    add(const RestoreSessionRequested());
   }
+
+  // ── Country codes (asset) ────────────────────────────────────────────
 
   Future<void> _onLoadCountryCodesRequested(
     LoadCountryCodesRequested event,
@@ -41,23 +72,79 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
           filteredCountryCodes: countryCodes,
         ),
       );
-    } catch (e) {
-      // Handle error silently or log
+    } catch (_) {
+      // Silently ignore — UI will show no list
     }
   }
+
+  // ── Restore session (on app start) ──────────────────────────────────
+
+  Future<void> _onRestoreSessionRequested(
+    RestoreSessionRequested event,
+    Emitter<AuthState> emit,
+  ) async {
+    try {
+      final user = await _loadUserSessionUseCase(null);
+      if (user != null) {
+        emit(
+          state.copyWith(status: AuthStatus.authenticated, currentUser: user),
+        );
+      }
+    } catch (_) {
+      // No session, stay unauthenticated
+    }
+  }
+
+  // ── Sign in ─────────────────────────────────────────────────────────
 
   Future<void> _onSignInRequested(
     SignInRequested event,
     Emitter<AuthState> emit,
   ) async {
-    emit(state.copyWith(status: AuthStatus.loading, isLoading: true));
+    emit(
+      state.copyWith(
+        status: AuthStatus.loading,
+        isLoading: true,
+        errorMessage: null,
+      ),
+    );
     try {
-      await Future.delayed(const Duration(seconds: 1));
+      final user = await _signInUseCase(
+        SignInParams(email: event.email, password: event.password),
+      );
+      await _saveUserSessionUseCase(user);
       emit(
         state.copyWith(
           status: AuthStatus.authenticated,
-          isLoading: true,
-          message: null,
+          isLoading: false,
+          currentUser: user,
+          email: user.email,
+          successMessage: 'Signed in successfully',
+          errorMessage: null,
+        ),
+      );
+    } on UserNotFoundException catch (e) {
+      emit(
+        state.copyWith(
+          status: AuthStatus.error,
+          isLoading: false,
+          errorMessage: e.message,
+        ),
+      );
+    } on InvalidCredentialsException catch (e) {
+      emit(
+        state.copyWith(
+          status: AuthStatus.error,
+          isLoading: false,
+          errorMessage: e.message,
+        ),
+      );
+    } on ValidationAuthException catch (e) {
+      emit(
+        state.copyWith(
+          status: AuthStatus.error,
+          isLoading: false,
+          errorMessage: e.message,
         ),
       );
     } catch (e) {
@@ -65,11 +152,13 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         state.copyWith(
           status: AuthStatus.error,
           isLoading: false,
-          message: e.toString(),
+          errorMessage: e.toString(),
         ),
       );
     }
   }
+
+  // ── Sign up step 1 (email + password) ───────────────────────────────
 
   Future<void> _onSignUpStepOneRequested(
     SignUpStepOneRequested event,
@@ -77,51 +166,49 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
   ) async {
     emit(state.copyWith(isLoading: true, errorMessage: null));
 
-    // Validate email
-    if (event.email.trim().isEmpty) {
+    final email = event.email.trim();
+    final password = event.password;
+
+    if (email.isEmpty) {
       emit(
         state.copyWith(
           isLoading: false,
           isEmailRequired: true,
+          isPasswordRequired: false,
           errorMessage: 'Email is required',
         ),
       );
       return;
     }
-
-    // Validate email format
     final emailRegex = RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$');
-    if (!emailRegex.hasMatch(event.email.trim())) {
+    if (!emailRegex.hasMatch(email)) {
       emit(
         state.copyWith(
           isLoading: false,
           isValidEmail: false,
+          isEmailRequired: true,
           errorMessage: 'Invalid email format',
         ),
       );
       return;
     }
-
-    // Validate password
-    if (event.password.trim().isEmpty) {
+    if (password.isEmpty) {
       emit(
         state.copyWith(
           isLoading: false,
           isPasswordRequired: true,
+          isEmailRequired: false,
           errorMessage: 'Password is required',
         ),
       );
       return;
     }
 
-    // Validate password strength
-    final hasLength = event.password.length >= 8;
-    final hasUppercase = event.password.contains(RegExp(r'[A-Z]'));
-    final hasNumber = event.password.contains(RegExp(r'[0-9]'));
-    final hasSymbol = event.password.contains(
-      RegExp(r'[!@#$%^&*(),.?":{}|<>]'),
-    );
-
+    // Password strength
+    final hasLength = password.length >= 8;
+    final hasUppercase = password.contains(RegExp(r'[A-Z]'));
+    final hasNumber = password.contains(RegExp(r'[0-9]'));
+    final hasSymbol = password.contains(RegExp(r'[!@#$%^&*(),.?":{}|<>]'));
     final isValidPassword = hasLength && hasUppercase && hasNumber && hasSymbol;
 
     emit(
@@ -131,8 +218,8 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         hasUppercaseSymbol: hasUppercase || hasSymbol,
         hasANumber: hasNumber,
         isValidPassword: isValidPassword,
-        email: event.email,
-        password: event.password,
+        email: email,
+        password: password,
       ),
     );
 
@@ -141,8 +228,28 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       return;
     }
 
-    // TODO: Check if user already exists via repository
-    // For now, proceed to step two
+    // Check if email already registered
+    try {
+      final exists = await _checkUserExistsUseCase(email);
+      if (exists) {
+        emit(
+          state.copyWith(
+            isLoading: false,
+            errorMessage: 'Email already exists',
+          ),
+        );
+        return;
+      }
+    } catch (e) {
+      emit(
+        state.copyWith(
+          isLoading: false,
+          errorMessage: 'Could not verify email: ${e.toString()}',
+        ),
+      );
+      return;
+    }
+
     emit(
       state.copyWith(
         status: AuthStatus.stepOneVerified,
@@ -154,39 +261,44 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     );
   }
 
+  // ── Sign up step 2 (full account) ──────────────────────────────────
+
   Future<void> _onSignUpStepTwoRequested(
     SignUpStepTwoRequested event,
     Emitter<AuthState> emit,
   ) async {
     emit(state.copyWith(isLoading: true, errorMessage: null));
 
-    // Validate required fields
     if (event.fullName.trim().isEmpty) {
       emit(
         state.copyWith(
           isLoading: false,
           isNameRequired: true,
+          isPhoneRequired: false,
+          isBusinessRequired: false,
           errorMessage: 'Full name is required',
         ),
       );
       return;
     }
-
     if (event.phoneNumber.trim().isEmpty) {
       emit(
         state.copyWith(
           isLoading: false,
+          isNameRequired: false,
           isPhoneRequired: true,
+          isBusinessRequired: false,
           errorMessage: 'Phone number is required',
         ),
       );
       return;
     }
-
     if (event.businessName.trim().isEmpty) {
       emit(
         state.copyWith(
           isLoading: false,
+          isNameRequired: false,
+          isPhoneRequired: false,
           isBusinessRequired: true,
           errorMessage: 'Business name is required',
         ),
@@ -194,26 +306,52 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       return;
     }
 
-    // All validations passed
-    emit(
-      state.copyWith(
-        isLoading: false,
-        fullName: event.fullName,
-        phoneNumber: event.phoneNumber,
-        dialCode: event.dialCode,
-        businessName: event.businessName,
-        address: event.address,
-        isNameRequired: false,
-        isPhoneRequired: false,
-        isBusinessRequired: false,
-        successMessage: 'Registration completed',
-      ),
+    final newUser = UserEntity(
+      email: state.email,
+      fullName: event.fullName.trim(),
+      countryCode: event.dialCode,
+      currency: state.currency,
+      phoneNumber: event.phoneNumber.trim(),
+      businessName: event.businessName.trim(),
+      address: event.address.trim(),
+      profilePicture: state.profilePicture,
+      isActive: true,
+      role: 'user',
     );
 
-    // TODO: Call sign up use case with all data
-    // Navigate to dashboard
-    emit(state.copyWith(status: AuthStatus.authenticated));
+    try {
+      await _signUpUseCase(user: newUser, password: state.password ?? '');
+
+      // Sign the new user in immediately and persist the session.
+      final signedIn = await _signInUseCase(
+        SignInParams(
+          email: newUser.email ?? '',
+          password: state.password ?? '',
+        ),
+      );
+      await _saveUserSessionUseCase(signedIn);
+
+      emit(
+        state.copyWith(
+          status: AuthStatus.authenticated,
+          isLoading: false,
+          currentUser: signedIn,
+          successMessage: 'Account created successfully',
+          isNameRequired: false,
+          isPhoneRequired: false,
+          isBusinessRequired: false,
+        ),
+      );
+    } on UserAlreadyExistsException catch (e) {
+      emit(state.copyWith(isLoading: false, errorMessage: e.message));
+    } on ValidationAuthException catch (e) {
+      emit(state.copyWith(isLoading: false, errorMessage: e.message));
+    } catch (e) {
+      emit(state.copyWith(isLoading: false, errorMessage: e.toString()));
+    }
   }
+
+  // ── Validation ─────────────────────────────────────────────────────
 
   void _onValidateEmailRequested(
     ValidateEmailRequested event,
@@ -257,6 +395,8 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     );
   }
 
+  // ── UI helpers ─────────────────────────────────────────────────────
+
   void _onTogglePasswordVisibilityRequested(
     TogglePasswordVisibilityRequested event,
     Emitter<AuthState> emit,
@@ -278,7 +418,12 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
   ) {
     if (event.index >= 0 && event.index < state.filteredCountryCodes.length) {
       final selected = state.filteredCountryCodes[event.index];
-      emit(state.copyWith(dialCode: selected.dialCode ?? '+213'));
+      emit(
+        state.copyWith(
+          dialCode: selected.dialCode ?? '+213',
+          currency: selected.currencyCode ?? state.currency,
+        ),
+      );
     }
   }
 
@@ -295,6 +440,13 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     emit(state.copyWith(filteredCountryCodes: filtered));
   }
 
+  void _onUpdateProfilePictureRequested(
+    UpdateProfilePictureRequested event,
+    Emitter<AuthState> emit,
+  ) {
+    emit(state.copyWith(profilePicture: event.path));
+  }
+
   void _onResetAuthStateRequested(
     ResetAuthStateRequested event,
     Emitter<AuthState> emit,
@@ -303,14 +455,15 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     add(const LoadCountryCodesRequested());
   }
 
+  // ── Sign out ───────────────────────────────────────────────────────
+
   Future<void> _onSignOutRequested(
     SignOutRequested event,
     Emitter<AuthState> emit,
   ) async {
     emit(state.copyWith(status: AuthStatus.loading, isLoading: true));
     try {
-      // TODO: Implement actual sign out logic
-      await Future.delayed(const Duration(milliseconds: 500));
+      await _logoutUseCase(null);
       emit(
         const AuthState(
           status: AuthStatus.unauthenticated,
@@ -324,7 +477,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         state.copyWith(
           status: AuthStatus.error,
           isLoading: false,
-          message: e.toString(),
+          errorMessage: e.toString(),
         ),
       );
     }

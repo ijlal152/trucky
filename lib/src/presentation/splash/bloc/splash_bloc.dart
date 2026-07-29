@@ -1,11 +1,17 @@
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:injectable/injectable.dart';
+
+import '../../../domain/usecases/auth_usecases/load_user_session_uc.dart';
 
 part 'splash_event.dart';
 part 'splash_state.dart';
 
+@injectable
 class SplashBloc extends Bloc<SplashEvent, SplashState> {
-  SplashBloc() : super(const SplashState()) {
+  final LoadUserSessionUseCase _loadUserSessionUseCase;
+
+  SplashBloc(this._loadUserSessionUseCase) : super(const SplashState()) {
     on<CheckAuthStatus>(_onCheckAuthStatus);
   }
 
@@ -14,22 +20,18 @@ class SplashBloc extends Bloc<SplashEvent, SplashState> {
     Emitter<SplashState> emit,
   ) async {
     emit(state.copyWith(status: SplashStatus.loading));
-    // Simulate splash delay and check authentication status
+    // Brief delay so the splash screen is visible
     await Future.delayed(const Duration(seconds: 2));
 
-    // TODO: Replace with actual auth check logic (e.g., check stored token)
-    final isLoggedIn = await _checkAuthentication();
-
-    if (isLoggedIn) {
-      emit(state.copyWith(status: SplashStatus.authenticated));
-    } else {
+    try {
+      final user = await _loadUserSessionUseCase(null);
+      if (user != null) {
+        emit(state.copyWith(status: SplashStatus.authenticated));
+      } else {
+        emit(state.copyWith(status: SplashStatus.unauthenticated));
+      }
+    } catch (_) {
       emit(state.copyWith(status: SplashStatus.unauthenticated));
     }
-  }
-
-  Future<bool> _checkAuthentication() async {
-    // TODO: Implement actual authentication check
-    // e.g., check if user token exists in secure storage
-    return false;
   }
 }
