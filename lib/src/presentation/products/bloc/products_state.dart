@@ -7,12 +7,14 @@ class ProductsState extends Equatable {
   final String? message;
   final bool hideBalance;
   final double totalStockValue;
+  final List<ProductModel> products;
 
   const ProductsState({
     this.status = ProductsStatus.initial,
     this.message,
     this.hideBalance = false,
     this.totalStockValue = 0.0,
+    this.products = const [],
   });
 
   ProductsState copyWith({
@@ -20,15 +22,23 @@ class ProductsState extends Equatable {
     String? message,
     bool? hideBalance,
     double? totalStockValue,
+    List<ProductModel>? products,
   }) {
     return ProductsState(
       status: status ?? this.status,
       message: message,
       hideBalance: hideBalance ?? this.hideBalance,
       totalStockValue: totalStockValue ?? this.totalStockValue,
+      products: products ?? this.products,
     );
   }
 
   @override
-  List<Object?> get props => [status, message, hideBalance, totalStockValue];
+  List<Object?> get props => [
+    status,
+    message,
+    hideBalance,
+    totalStockValue,
+    products,
+  ];
 }

@@ -2,8 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:hive_flutter/hive_flutter.dart';
 
 import 'core/theme/app_theme.dart';
+import 'src/data/datasource/products/product_local_datasource.dart';
+import 'src/data/models/product_model.dart';
+import 'src/data/repo_impl/products_repo_impl.dart';
+import 'src/domain/repositories/product_repo.dart';
 import 'src/presentation/analytics/bloc/analytics_bloc.dart';
 import 'src/presentation/authentication/bloc/auth_bloc.dart';
 import 'src/presentation/client-supplier/bloc/client_supplier_bloc.dart';
@@ -15,9 +20,19 @@ import 'src/presentation/settings/bloc/settings_bloc.dart';
 import 'src/presentation/splash/bloc/splash_bloc.dart';
 import 'src/presentation/treasury/bloc/treasury_bloc.dart';
 
+late ProductRepository productRepository;
+
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await ScreenUtil.ensureScreenSize();
+
+  // ── Hive initialization ──────────────────────────────────────────
+  await Hive.initFlutter();
+  Hive.registerAdapter(ProductModelAdapter());
+  await Hive.openBox<ProductModel>('products');
+
+  productRepository = ProductRepositoryImpl(ProductLocalDatasourceImpl());
+
   await Future.delayed(const Duration(milliseconds: 150));
   runApp(const TruckyApp());
 }
