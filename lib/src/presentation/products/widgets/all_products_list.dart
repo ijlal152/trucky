@@ -82,7 +82,10 @@ class _ProductItem extends StatelessWidget {
 
     return GestureDetector(
       onTap: () {
-        context.goNamed(AppRoutes.productDashboard.name, extra: product.id);
+        context.goNamed(
+          AppRoutes.productDashboard.name,
+          pathParameters: {'productId': product.id},
+        );
       },
       child: Padding(
         padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 12.h),

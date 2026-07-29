@@ -5,20 +5,35 @@ import 'package:flutter_svg/svg.dart';
 import 'package:go_router/go_router.dart';
 import 'package:trucky/common/widgets/widget_imports.dart';
 import 'package:trucky/src/data/models/product_model.dart';
+import 'package:trucky/src/data/models/product_transaction_model.dart';
 import 'package:trucky/src/presentation/routes/app_routes.dart';
 
 import '../bloc/products_bloc.dart';
 
-class ProductDashboardPage extends StatelessWidget {
+class ProductDashboardPage extends StatefulWidget {
   final String? productId;
 
   const ProductDashboardPage({super.key, this.productId});
 
-  ProductModel? _findProduct(BuildContext context) {
-    final state = context.read<ProductsBloc>().state;
-    if (productId == null) return null;
+  @override
+  State<ProductDashboardPage> createState() => _ProductDashboardPageState();
+}
+
+class _ProductDashboardPageState extends State<ProductDashboardPage> {
+  @override
+  void initState() {
+    super.initState();
+    if (widget.productId != null) {
+      context.read<ProductsBloc>().add(
+        LoadProductTransactions(productId: widget.productId!),
+      );
+    }
+  }
+
+  ProductModel? _findProduct(List<ProductModel> products) {
+    if (widget.productId == null) return null;
     try {
-      return state.products.firstWhere((p) => p.id == productId);
+      return products.firstWhere((p) => p.id == widget.productId);
     } catch (_) {
       return null;
     }
@@ -28,7 +43,7 @@ class ProductDashboardPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocBuilder<ProductsBloc, ProductsState>(
       builder: (context, state) {
-        final product = _findProduct(context);
+        final product = _findProduct(state.products);
         final cs = Theme.of(context).colorScheme;
 
         if (product == null) {
@@ -75,10 +90,8 @@ class ProductDashboardPage extends StatelessWidget {
                 ),
                 onSelected: (value) {
                   if (value == 1) {
-                    // Edit → navigate to add product page
                     context.goNamed(AppRoutes.addProduct.name);
                   } else if (value == 2) {
-                    // Delete
                     // TODO: Show confirmation dialog then delete
                   }
                 },
@@ -129,19 +142,29 @@ class ProductDashboardPage extends StatelessWidget {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
-                      // ── Product info card ───────────────────────
+                      // ── Product info header ─────────────────────
                       _ProductInfoHeader(
                         product: product,
                         hideBalance: state.hideBalance,
+                        transactions: state.transactions,
                       ),
                       30.verticalSpace,
+
+                      // ── Stats row (Sold / Purchased) ─────────────
+                      _StatsRow(
+                        totalSold: state.totalSold,
+                        totalPurchased: state.totalPurchased,
+                      ),
+                      16.verticalSpace,
 
                       // ── Transactions sheet ──────────────────────
                       Expanded(
                         child: ContentSheet(
                           filterIconOnTap: () {},
                           searchIconOnTap: () {},
-                          contentWidget: _buildTransactionList(context),
+                          contentWidget: _TransactionList(
+                            transactions: state.transactions,
+                          ),
                         ),
                       ),
                     ],
@@ -154,31 +177,229 @@ class ProductDashboardPage extends StatelessWidget {
       },
     );
   }
+}
 
-  Widget _buildTransactionList(BuildContext context) {
-    // TODO: Replace with actual transaction history from database
+// ═══════════════════════════════════════════════════════════════════════════════
+//  Stats row — Sold / Purchased summary
+// ═══════════════════════════════════════════════════════════════════════════════
+class _StatsRow extends StatelessWidget {
+  final int totalSold;
+  final int totalPurchased;
+
+  const _StatsRow({required this.totalSold, required this.totalPurchased});
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: EdgeInsets.symmetric(horizontal: 20.w),
+      child: Row(
+        children: [
+          _StatChip(
+            label: 'Total Sold',
+            value: '$totalSold units',
+            icon: Icons.shopping_cart_outlined,
+            color: Colors.greenAccent,
+          ),
+          SizedBox(width: 12.w),
+          _StatChip(
+            label: 'Total Purchased',
+            value: '$totalPurchased units',
+            icon: Icons.receipt_long_outlined,
+            color: Colors.orangeAccent,
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _StatChip extends StatelessWidget {
+  final String label;
+  final String value;
+  final IconData icon;
+  final Color color;
+
+  const _StatChip({
+    required this.label,
+    required this.value,
+    required this.icon,
+    required this.color,
+  });
+
+  @override
+  Widget build(BuildContext context) {
     final cs = Theme.of(context).colorScheme;
-
-    return Center(
-      child: Padding(
-        padding: EdgeInsets.only(top: 40.h),
-        child: Column(
+    return Expanded(
+      child: Container(
+        padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 10.h),
+        decoration: BoxDecoration(
+          color: cs.surfaceContainerHighest.withValues(alpha: 0.5),
+          borderRadius: BorderRadius.circular(12.r),
+        ),
+        child: Row(
           children: [
-            Icon(
-              Icons.receipt_long_outlined,
-              size: 48.sp,
-              color: cs.onSurfaceVariant,
-            ),
-            12.verticalSpace,
-            LabelWidget(
-              text: "No transactions yet",
-              textSize: 15.sp,
-              textColor: cs.onSurfaceVariant,
+            Icon(icon, size: 20.sp, color: color),
+            SizedBox(width: 8.w),
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                LabelWidget(
+                  text: label,
+                  textSize: 11.sp,
+                  textColor: cs.onSurfaceVariant,
+                ),
+                LabelWidget(
+                  text: value,
+                  textSize: 14.sp,
+                  fontWeight: FontWeight.bold,
+                  textColor: cs.onSurface,
+                ),
+              ],
             ),
           ],
         ),
       ),
     );
+  }
+}
+
+// ═══════════════════════════════════════════════════════════════════════════════
+//  Transaction list
+// ═══════════════════════════════════════════════════════════════════════════════
+class _TransactionList extends StatelessWidget {
+  final List<ProductTransactionModel> transactions;
+
+  const _TransactionList({required this.transactions});
+
+  @override
+  Widget build(BuildContext context) {
+    final cs = Theme.of(context).colorScheme;
+
+    if (transactions.isEmpty) {
+      return Center(
+        child: Padding(
+          padding: EdgeInsets.only(top: 40.h),
+          child: Column(
+            children: [
+              Icon(
+                Icons.receipt_long_outlined,
+                size: 48.sp,
+                color: cs.onSurfaceVariant,
+              ),
+              12.verticalSpace,
+              LabelWidget(
+                text: "No transactions yet",
+                textSize: 15.sp,
+                textColor: cs.onSurfaceVariant,
+              ),
+            ],
+          ),
+        ),
+      );
+    }
+
+    return ListView.separated(
+      shrinkWrap: true,
+      padding: EdgeInsets.zero,
+      itemCount: transactions.length,
+      separatorBuilder: (_, __) => Divider(
+        height: 1,
+        indent: 16.w,
+        endIndent: 16.w,
+        color: cs.outlineVariant,
+      ),
+      itemBuilder: (context, index) {
+        final tx = transactions[index];
+        return _TransactionItem(transaction: tx);
+      },
+    );
+  }
+}
+
+class _TransactionItem extends StatelessWidget {
+  final ProductTransactionModel transaction;
+
+  const _TransactionItem({required this.transaction});
+
+  @override
+  Widget build(BuildContext context) {
+    final cs = Theme.of(context).colorScheme;
+    final isIncoming = transaction.isIncoming;
+    final icon = isIncoming
+        ? Icons.arrow_downward_rounded
+        : Icons.arrow_upward_rounded;
+    final iconColor = isIncoming ? Colors.green : Colors.redAccent;
+
+    return Padding(
+      padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 10.h),
+      child: Row(
+        children: [
+          // Type icon
+          Container(
+            width: 36.h,
+            height: 36.h,
+            decoration: BoxDecoration(
+              color: iconColor.withValues(alpha: 0.1),
+              borderRadius: BorderRadius.circular(8.r),
+            ),
+            child: Icon(icon, size: 18.sp, color: iconColor),
+          ),
+          12.horizontalSpace,
+
+          // Details
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                LabelWidget(
+                  text: transaction.typeLabel,
+                  textSize: 14.sp,
+                  fontWeight: FontWeight.w600,
+                  textColor: cs.onSurface,
+                ),
+                if (transaction.referenceName != null) ...[
+                  2.verticalSpace,
+                  LabelWidget(
+                    text: transaction.referenceName!,
+                    textSize: 12.sp,
+                    textColor: cs.onSurfaceVariant,
+                  ),
+                ],
+                2.verticalSpace,
+                LabelWidget(
+                  text: _formatDate(transaction.date),
+                  textSize: 11.sp,
+                  textColor: cs.outline,
+                ),
+              ],
+            ),
+          ),
+
+          // Quantity
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.end,
+            children: [
+              LabelWidget(
+                text: '${isIncoming ? '+' : ''}${transaction.quantity} units',
+                textSize: 14.sp,
+                fontWeight: FontWeight.bold,
+                textColor: isIncoming ? Colors.green : Colors.redAccent,
+              ),
+              if (transaction.note != null && transaction.note!.isNotEmpty)
+                LabelWidget(
+                  text: transaction.note!,
+                  textSize: 11.sp,
+                  textColor: cs.outline,
+                ),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+
+  String _formatDate(DateTime dt) {
+    return '${dt.day}/${dt.month}/${dt.year}';
   }
 }
 
@@ -189,10 +410,15 @@ class ProductDashboardPage extends StatelessWidget {
 class _ProductInfoHeader extends StatelessWidget {
   final ProductModel product;
   final bool hideBalance;
+  final List<ProductTransactionModel> transactions;
 
-  const _ProductInfoHeader({required this.product, required this.hideBalance});
+  const _ProductInfoHeader({
+    required this.product,
+    required this.hideBalance,
+    required this.transactions,
+  });
 
-  int get _availableStock => product.initialQuantity;
+  int get _availableStock => product.computeAvailableStock(transactions);
 
   @override
   Widget build(BuildContext context) {
@@ -280,7 +506,7 @@ class _ProductInfoHeader extends StatelessWidget {
               LabelWidget(
                 text: hideBalance
                     ? "*****"
-                    : "\$${(product.purchasePrice * _availableStock).toStringAsFixed(2)}",
+                    : "\$${product.computeStockValue(transactions).toStringAsFixed(2)}",
                 textColor: Colors.white,
                 textSize: 20.sp,
                 fontWeight: FontWeight.bold,

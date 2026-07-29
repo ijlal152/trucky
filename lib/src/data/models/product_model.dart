@@ -1,5 +1,7 @@
 import 'package:hive/hive.dart';
 
+import 'product_transaction_model.dart';
+
 @HiveType(typeId: 0)
 class ProductModel extends HiveObject {
   @HiveField(0)
@@ -40,4 +42,29 @@ class ProductModel extends HiveObject {
     this.productImage,
     DateTime? createdAt,
   }) : createdAt = createdAt ?? DateTime.now();
+
+  // ── Computed stock helpers ──────────────────────────────────────────────
+
+  /// Calculates the current available stock from transaction history.
+  /// Falls back to [initialQuantity] when no transactions are given.
+  int computeAvailableStock([List<ProductTransactionModel>? transactions]) {
+    if (transactions == null || transactions.isEmpty) return initialQuantity;
+    return transactions.fold(0, (sum, t) => sum + t.quantity);
+  }
+
+  /// Calculates the current stock value.
+  double computeStockValue([List<ProductTransactionModel>? transactions]) {
+    final qty = computeAvailableStock(transactions);
+    return qty * purchasePrice;
+  }
+
+  /// Formats stock as "X Pcs" with package breakdown.
+  String formatStock(int availableStock) {
+    if (quantityPerPackage <= 0) return '$availableStock Pcs';
+    final fullPackages = availableStock ~/ quantityPerPackage;
+    final extraUnits = availableStock % quantityPerPackage;
+    if (extraUnits == 0)
+      return '$availableStock Pcs ($fullPackages\u00d7$quantityPerPackage)';
+    return '$availableStock Pcs ($fullPackages\u00d7$quantityPerPackage+$extraUnits)';
+  }
 }

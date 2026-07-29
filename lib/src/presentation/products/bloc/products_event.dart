@@ -49,3 +49,13 @@ class AddProductEvent extends ProductsEvent {
     productImage,
   ];
 }
+
+/// Loads transaction history for a specific product (for dashboard)
+class LoadProductTransactions extends ProductsEvent {
+  final String productId;
+
+  const LoadProductTransactions({required this.productId});
+
+  @override
+  List<Object?> get props => [productId];
+}

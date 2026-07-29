@@ -65,13 +65,11 @@ class AppRouter {
             builder: (context, state) => const AddProductPage(),
           ),
           GoRoute(
-            path: AppRoutes.productDashboard.path.replaceFirst(
-              '/products/',
-              '',
-            ),
+            path: 'dashboard/:productId',
             name: AppRoutes.productDashboard.name,
-            builder: (context, state) =>
-                ProductDashboardPage(productId: state.extra as String?),
+            builder: (context, state) => ProductDashboardPage(
+              productId: state.pathParameters['productId'],
+            ),
           ),
         ],
       ),

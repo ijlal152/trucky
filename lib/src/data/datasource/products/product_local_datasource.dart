@@ -1,5 +1,6 @@
 import 'package:hive/hive.dart';
 import 'package:injectable/injectable.dart';
+import 'package:trucky/src/data/datasource/products/product_transaction_local_datasource.dart';
 import 'package:trucky/src/data/models/product_model.dart';
 
 abstract class ProductLocalDatasource {
@@ -16,8 +17,9 @@ class ProductLocalDatasourceImpl implements ProductLocalDatasource {
   static const String _boxName = 'products';
 
   late Box<ProductModel> _box;
+  final ProductTransactionLocalDatasource _transactionDatasource;
 
-  ProductLocalDatasourceImpl() {
+  ProductLocalDatasourceImpl(this._transactionDatasource) {
     _box = Hive.box<ProductModel>(_boxName);
   }
 
@@ -51,7 +53,9 @@ class ProductLocalDatasourceImpl implements ProductLocalDatasource {
     final products = _box.values;
     double total = 0;
     for (final product in products) {
-      total += product.purchasePrice * product.initialQuantity;
+      final stockValue = await _transactionDatasource
+          .getTotalStockValueForProduct(product.id);
+      total += stockValue;
     }
     return total;
   }

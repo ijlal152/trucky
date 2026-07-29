@@ -20,7 +20,7 @@ class AppRoutes {
   );
   static const RouteSpec productDashboard = RouteSpec._(
     name: 'productDashboard',
-    path: '/products/dashboard',
+    path: '/products/dashboard/:productId',
   );
   static const RouteSpec sales = RouteSpec._(name: 'sales', path: '/sales');
   static const RouteSpec purchases = RouteSpec._(
