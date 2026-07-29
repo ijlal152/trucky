@@ -11,6 +11,8 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
   final Color? foregroundColor;
   final PreferredSizeWidget? bottom;
   final double toolbarHeight;
+  final VoidCallback? leadingOnTap;
+  final Color? leadingIconColor;
 
   const CustomAppBar({
     super.key,
@@ -24,6 +26,8 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
     this.foregroundColor,
     this.bottom,
     this.toolbarHeight = kToolbarHeight,
+    this.leadingOnTap,
+    this.leadingIconColor,
   });
 
   @override
@@ -31,25 +35,52 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
 
-    return AppBar(
-      title: titleWidget ?? (title != null ? Text(title!) : null),
-      actions: actions,
-      leading: leading,
-      automaticallyImplyLeading: automaticallyImplyLeading,
-      elevation: elevation,
-      backgroundColor: backgroundColor ?? colorScheme.primary,
-      foregroundColor: foregroundColor ?? colorScheme.onPrimary,
-      iconTheme: IconThemeData(color: foregroundColor ?? colorScheme.onPrimary),
-      actionsIconTheme: IconThemeData(
-        color: foregroundColor ?? colorScheme.onPrimary,
+    return PreferredSize(
+      preferredSize: Size.fromHeight(70.h),
+      child: AppBar(
+        title: titleWidget ?? (title != null ? Text(title!) : null),
+        actions: actions,
+        leading: automaticallyImplyLeading == true
+            ? IconButton(
+                onPressed: () {
+                  if (leadingOnTap != null) {
+                    leadingOnTap!(); // invoke the callback
+                  } else {
+                    context.pop(); // default behavior
+                  }
+                },
+                icon: SvgPicture.asset(
+                  AppAssets.svgs.backBtnSvg,
+                  fit: BoxFit.contain,
+                  height: 16.h,
+                  width: 16.w,
+                  colorFilter: ColorFilter.mode(
+                    leadingIconColor ?? Colors.black,
+                    BlendMode.srcIn,
+                  ),
+                ),
+              )
+            : null,
+        automaticallyImplyLeading: automaticallyImplyLeading,
+        elevation: elevation,
+        forceMaterialTransparency: true,
+        backgroundColor: backgroundColor ?? colorScheme.primary,
+        foregroundColor: foregroundColor ?? colorScheme.onPrimary,
+        iconTheme: IconThemeData(
+          color: foregroundColor ?? colorScheme.onPrimary,
+        ),
+        actionsIconTheme: IconThemeData(
+          color: foregroundColor ?? colorScheme.onPrimary,
+        ),
+        bottom: bottom,
+        toolbarHeight: toolbarHeight,
+        centerTitle: true,
       ),
-      bottom: bottom,
-      toolbarHeight: toolbarHeight,
-      centerTitle: true,
     );
   }
 
   @override
-  Size get preferredSize =>
-      Size.fromHeight(toolbarHeight + (bottom?.preferredSize.height ?? 0));
+  Size get preferredSize => Size.fromHeight(toolbarHeight.h);
+  // Size get preferredSize =>
+  //     Size.fromHeight(toolbarHeight + (bottom?.preferredSize.height ?? 0));
 }

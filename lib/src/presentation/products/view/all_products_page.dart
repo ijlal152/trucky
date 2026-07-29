@@ -30,6 +30,7 @@ class _AllProductsPageState extends State<AllProductsPage> {
           extendBodyBehindAppBar: true,
           appBar: CustomAppBar(
             title: "Products",
+            leadingIconColor: Colors.white,
             backgroundColor: Colors.transparent,
             foregroundColor: Colors.white,
             actions: [

@@ -17,7 +17,7 @@ class HomePage extends StatelessWidget {
     return BlocBuilder<HomeBloc, HomeState>(
       builder: (context, state) {
         return PopScope(
-          canPop: false,
+          canPop: true,
           child: CustomScaffold(
             body: SizedBox(
               width: double.infinity,
