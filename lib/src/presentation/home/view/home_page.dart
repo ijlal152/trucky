@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:go_router/go_router.dart';
 import 'package:trucky/common/widgets/widget_imports.dart';
+import 'package:trucky/src/presentation/routes/app_routes.dart';
 
 import '../../../../core/theme/app_colors.dart';
 import '../bloc/home_bloc.dart';
@@ -133,15 +135,6 @@ class _HomeHeader extends StatelessWidget {
 class _DashboardSheet extends StatelessWidget {
   const _DashboardSheet();
 
-  // final List<_FeatureItem> _features = const [
-  //   _FeatureItem(icon: Icons.shopping_cart_outlined, label: 'Sales'),
-  //   _FeatureItem(icon: Icons.shopping_bag_outlined, label: 'Purchases'),
-  //   _FeatureItem(icon: Icons.people_outline, label: 'Suppliers'),
-  //   _FeatureItem(icon: Icons.person_outline, label: 'Clients'),
-  //   _FeatureItem(icon: Icons.inventory_2_outlined, label: 'Products'),
-  //   _FeatureItem(icon: Icons.account_balance_outlined, label: 'Treasury'),
-  //   _FeatureItem(icon: Icons.analytics_outlined, label: 'Analysis'),
-  // ];
   final List<_FeatureItem> _features = const [
     _FeatureItem(icon: "assets/svgs/home-sales.svg", label: 'Sales'),
     _FeatureItem(icon: "assets/svgs/home-purchases.svg", label: 'Purchases'),
@@ -162,38 +155,68 @@ class _DashboardSheet extends StatelessWidget {
           // First row: Sales, Purchases
           Row(
             children: [
-              Expanded(child: _buildFeatureCard(_features[0], cs)),
+              Expanded(
+                child: _buildFeatureCard(_features[0], cs, () {
+                  context.goNamed(AppRoutes.sales.name);
+                }),
+              ),
               16.horizontalSpace,
-              Expanded(child: _buildFeatureCard(_features[1], cs)),
+              Expanded(
+                child: _buildFeatureCard(_features[1], cs, () {
+                  context.goNamed(AppRoutes.purchases.name);
+                }),
+              ),
             ],
           ),
           16.verticalSpace,
           // Second row: Suppliers, Clients
           Row(
             children: [
-              Expanded(child: _buildFeatureCard(_features[2], cs)),
+              Expanded(
+                child: _buildFeatureCard(_features[2], cs, () {
+                  context.goNamed(AppRoutes.suppliers.name);
+                }),
+              ),
               16.horizontalSpace,
-              Expanded(child: _buildFeatureCard(_features[3], cs)),
+              Expanded(
+                child: _buildFeatureCard(_features[3], cs, () {
+                  context.goNamed(AppRoutes.clients.name);
+                }),
+              ),
             ],
           ),
           16.verticalSpace,
           // Third row: Products, Treasury
           Row(
             children: [
-              Expanded(child: _buildFeatureCard(_features[4], cs)),
+              Expanded(
+                child: _buildFeatureCard(_features[4], cs, () {
+                  context.goNamed(AppRoutes.products.name);
+                }),
+              ),
               16.horizontalSpace,
-              Expanded(child: _buildFeatureCard(_features[5], cs)),
+              Expanded(
+                child: _buildFeatureCard(_features[5], cs, () {
+                  context.goNamed(AppRoutes.treasury.name);
+                }),
+              ),
             ],
           ),
           16.verticalSpace,
           // Analysis – full width
-          _buildAnalysisCard(cs),
+          _buildAnalysisCard(cs, () {
+            context.goNamed(AppRoutes.analysis.name);
+          }),
         ],
       ),
     );
   }
 
-  Widget _buildFeatureCard(_FeatureItem item, ColorScheme cs) {
+  Widget _buildFeatureCard(
+    _FeatureItem item,
+    ColorScheme cs,
+    VoidCallback? onTap,
+  ) {
     return Container(
       height: 130.h,
       width: 180.w,
@@ -214,7 +237,7 @@ class _DashboardSheet extends StatelessWidget {
         borderRadius: BorderRadius.circular(14.r),
         child: InkWell(
           borderRadius: BorderRadius.circular(14.r),
-          onTap: () {},
+          onTap: onTap,
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
@@ -247,7 +270,7 @@ class _DashboardSheet extends StatelessWidget {
     );
   }
 
-  Widget _buildAnalysisCard(ColorScheme cs) {
+  Widget _buildAnalysisCard(ColorScheme cs, VoidCallback? onTap) {
     return Container(
       height: 130.h,
       width: double.infinity,
@@ -267,7 +290,7 @@ class _DashboardSheet extends StatelessWidget {
         borderRadius: BorderRadius.circular(14.r),
         child: InkWell(
           borderRadius: BorderRadius.circular(14.r),
-          onTap: () {},
+          onTap: onTap,
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.center,
             mainAxisAlignment: MainAxisAlignment.center,
