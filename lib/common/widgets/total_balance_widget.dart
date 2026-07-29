@@ -14,50 +14,37 @@ class TotalBalanceWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final isDark = Theme.of(context).brightness == Brightness.dark;
-
-    return Container(
-      margin: EdgeInsets.symmetric(horizontal: 20.w),
-      padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 16.h),
-      decoration: BoxDecoration(
-        gradient: isDark
-            ? const LinearGradient(
-                begin: Alignment.topLeft,
-                end: Alignment.bottomRight,
-                colors: [Color(0xFF1A1A2E), Color(0xFF16213E)],
-              )
-            : AppColors.primaryGradient,
-        borderRadius: BorderRadius.circular(16.r),
-        boxShadow: [
-          BoxShadow(
-            color: AppColors.primaryBlue.withValues(alpha: 0.3),
-            blurRadius: 12.r,
-            offset: const Offset(0, 4),
-          ),
-        ],
-      ),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+    return Padding(
+      padding: EdgeInsets.symmetric(horizontal: 20.w).copyWith(top: 10.h),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              LabelWidget(
-                text: title,
-                textSize: 14.sp,
-                textColor: Colors.white.withValues(alpha: 0.85),
+          LabelWidget(
+            text: title,
+            textSize: 17.sp,
+            textColor: Colors.white.withValues(alpha: 0.85),
+            fontWeight: FontWeight.w600,
+          ),
+          Text.rich(
+            TextSpan(
+              text: hideBalance ? "*****" : "\$ ",
+              style: TextStyle(
+                fontSize: balance.length > 20 ? 25.sp : 36.sp,
+                color: Colors.white.withValues(alpha: 0.85),
                 fontWeight: FontWeight.w500,
               ),
-              4.verticalSpace,
-              LabelWidget(
-                text: hideBalance ? "*****" : "\$$balance",
-                textSize: 24.sp,
-                textColor: Colors.white,
-                fontWeight: FontWeight.w700,
-              ),
-            ],
+              children: [
+                TextSpan(
+                  text: hideBalance ? "" : balance,
+                  style: TextStyle(
+                    fontSize: balance.length > 20 ? 25.sp : 36.sp,
+                    color: Colors.white,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ],
+            ),
           ),
-          // Optional: add a small icon or chart decoration
         ],
       ),
     );
