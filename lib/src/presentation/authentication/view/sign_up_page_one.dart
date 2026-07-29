@@ -172,6 +172,8 @@ class _SignUpPageOneState extends State<SignUpPageOne> {
             ),
           ),
           bottomNavigationBar: CustomBottomNavBarWidget(
+            navBarColor: Colors.transparent,
+            padding: EdgeInsets.symmetric(vertical: 30.h),
             widget: Column(
               mainAxisSize: MainAxisSize.min,
               children: [

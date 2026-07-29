@@ -5,6 +5,7 @@ import 'package:go_router/go_router.dart';
 import 'package:trucky/common/widgets/widget_imports.dart';
 import 'package:trucky/core/localization/app_strings.dart';
 import 'package:trucky/core/localization/languages_services.dart';
+import 'package:trucky/src/presentation/authentication/widgets/auth_widgets.dart';
 import 'package:trucky/src/presentation/routes/app_routes.dart';
 
 import '../bloc/auth_bloc.dart';
@@ -73,109 +74,103 @@ class _SignInPageState extends State<SignInPage> {
             foregroundColor: colorScheme.onSurface,
             elevation: 0,
           ),
-          body: SafeArea(
-            child: Form(
-              key: _formKey,
-              child: SingleChildScrollView(
-                physics: const BouncingScrollPhysics(),
-                padding: EdgeInsets.symmetric(horizontal: 26.w),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    73.verticalSpace,
-                    Container(
-                      height: 145.h,
-                      width: 145.h,
-                      decoration: BoxDecoration(
-                        color: colorScheme.surface,
-                        borderRadius: BorderRadius.circular(8.r),
-                      ),
+          body: Form(
+            key: _formKey,
+            child: SingleChildScrollView(
+              physics: const BouncingScrollPhysics(),
+              padding: EdgeInsets.symmetric(horizontal: 26.w),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  73.verticalSpace,
+                  Container(
+                    height: 145.h,
+                    width: 145.h,
+                    decoration: BoxDecoration(
+                      color: colorScheme.surface,
+                      borderRadius: BorderRadius.circular(8.r),
                     ),
-                    22.verticalSpace,
-                    Align(
-                      alignment: AlignmentDirectional.topStart,
-                      child: LabelWidget(
-                        text: context.tr(AppStrings.signIn),
-                        textSize: 32.sp,
-                        fontWeight: FontWeight.w700,
-                        textColor: colorScheme.onSurface,
-                      ),
+                  ),
+                  22.verticalSpace,
+                  Align(
+                    alignment: AlignmentDirectional.topStart,
+                    child: LabelWidget(
+                      text: context.tr(AppStrings.signIn),
+                      textSize: 32.sp,
+                      fontWeight: FontWeight.w700,
+                      textColor: colorScheme.onSurface,
                     ),
-                    34.verticalSpace,
-                    CustomTextFormField(
-                      controller: _emailController,
-                      hintText: context.tr(AppStrings.emailAddress),
-                      keyboardType: TextInputType.emailAddress,
-                      textInputAction: TextInputAction.next,
-                      validator: (value) {
-                        if (value == null || value.trim().isEmpty) {
-                          return 'Email is required';
-                        }
-                        return null;
-                      },
-                    ),
-                    16.verticalSpace,
-                    CustomTextFormField(
-                      controller: _passwordController,
-                      hintText: context.tr(AppStrings.password),
-                      obscureText: _obscurePassword,
-                      suffixIcon: _obscurePassword
-                          ? Icons.visibility_off
-                          : Icons.visibility,
-                      onSuffixTap: () =>
-                          setState(() => _obscurePassword = !_obscurePassword),
-                      textInputAction: TextInputAction.done,
-                      validator: (value) {
-                        if (value == null || value.isEmpty) {
-                          return 'Password is required';
-                        }
-                        return null;
-                      },
-                    ),
-                    16.verticalSpace,
-                    CustomTextButton(
-                      text: 'Forgot Password ? Click here',
-                      textColor: linkColor,
-                      textSize: 15.sp,
-                      onTap: () {},
-                    ),
-                    60.verticalSpace,
-                    BlocBuilder<AuthBloc, AuthState>(
-                      builder: (context, state) {
-                        return CustomElevatedButton(
-                          text: context.tr(AppStrings.continueBtn),
-                          isLoading: state.status == AuthStatus.loading,
-                          onPressed: _onContinue,
-                          //backgroundColor: buttonBackground,
-                          //foregroundColor: buttonForeground,
-                          height: 56.h,
-                          radius: 100.r,
-                        );
-                      },
-                    ),
-                    24.verticalSpace,
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        LabelWidget(
-                          text: context.tr(AppStrings.dontHaveAnAccount),
-                          textSize: 15.sp,
-                          textColor: linkColor,
-                        ),
-                        4.horizontalSpace,
-                        CustomTextButton(
-                          text: context.tr(AppStrings.signUpHere),
-                          textColor: linkColor,
-                          textSize: 15.sp,
-                          fontWeight: FontWeight.w700,
-                          onTap: () => context.goNamed(AppRoutes.signUp.name),
-                        ),
-                      ],
-                    ),
-                    30.verticalSpace,
-                  ],
-                ),
+                  ),
+                  34.verticalSpace,
+                  CustomTextFormField(
+                    controller: _emailController,
+                    hintText: context.tr(AppStrings.emailAddress),
+                    keyboardType: TextInputType.emailAddress,
+                    textInputAction: TextInputAction.next,
+                    validator: (value) {
+                      if (value == null || value.trim().isEmpty) {
+                        return 'Email is required';
+                      }
+                      return null;
+                    },
+                  ),
+                  16.verticalSpace,
+                  CustomTextFormField(
+                    controller: _passwordController,
+                    hintText: context.tr(AppStrings.password),
+                    obscureText: _obscurePassword,
+                    suffixIcon: _obscurePassword
+                        ? Icons.visibility_off
+                        : Icons.visibility,
+                    onSuffixTap: () =>
+                        setState(() => _obscurePassword = !_obscurePassword),
+                    textInputAction: TextInputAction.done,
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return 'Password is required';
+                      }
+                      return null;
+                    },
+                  ),
+                  16.verticalSpace,
+                  CustomTextButton(
+                    text: 'Forgot Password ? Click here',
+                    textColor: linkColor,
+                    textSize: 15.sp,
+                    onTap: () {},
+                  ),
+                ],
               ),
+            ),
+          ),
+          bottomNavigationBar: CustomBottomNavBarWidget(
+            navBarColor: Colors.transparent,
+            padding: EdgeInsets.symmetric(vertical: 30.h, horizontal: 16.w),
+            widget: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                AlreadyHaveAccountWidget(
+                  btnText: context.tr(AppStrings.signUpHere),
+                  text: context.tr(AppStrings.dontHaveAnAccount),
+                  onTap: () {
+                    context.goNamed(AppRoutes.signUp.name);
+                  },
+                ),
+                30.verticalSpace,
+                BlocBuilder<AuthBloc, AuthState>(
+                  builder: (context, state) {
+                    return CustomElevatedButton(
+                      text: context.tr(AppStrings.continueBtn),
+                      isLoading: state.status == AuthStatus.loading,
+                      onPressed: _onContinue,
+                      //backgroundColor: buttonBackground,
+                      //foregroundColor: buttonForeground,
+                      height: 56.h,
+                      radius: 100.r,
+                    );
+                  },
+                ),
+              ],
             ),
           ),
         ),

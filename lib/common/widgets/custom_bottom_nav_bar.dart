@@ -16,7 +16,7 @@ class CustomBottomNavBarWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: EdgeInsets.only(bottom: 30.h),
+      padding: padding ?? EdgeInsets.only(bottom: 30.h),
       decoration: BoxDecoration(
         color: navBarColor ?? Theme.of(context).colorScheme.surface,
         borderRadius: BorderRadius.only(

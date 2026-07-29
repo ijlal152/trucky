@@ -64,7 +64,7 @@ class CustomTextFormField extends StatelessWidget {
       maxLines: maxLines,
       minLines: minLines,
       enabled: enabled,
-      style: TextStyle(fontSize: 14.sp, color: colorScheme.onSurface),
+      style: TextStyle(fontSize: 17.sp, color: colorScheme.onSurface),
       decoration: InputDecoration(
         hintText: hintText,
         labelText: labelText,
@@ -97,20 +97,20 @@ class CustomTextFormField extends StatelessWidget {
           borderRadius: BorderRadius.circular(12.r),
           borderSide: BorderSide(
             color: borderColor ?? colorScheme.outline,
-            width: 1,
+            width: 1.w,
           ),
         ),
         focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(12.r),
-          borderSide: BorderSide(color: colorScheme.primary, width: 1.5),
+          borderSide: BorderSide(color: colorScheme.primary, width: 1.5.w),
         ),
         errorBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(12.r),
-          borderSide: const BorderSide(color: AppColors.error, width: 1),
+          borderSide: BorderSide(color: AppColors.error, width: 1.w),
         ),
         focusedErrorBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(12.r),
-          borderSide: const BorderSide(color: AppColors.error, width: 1.5),
+          borderSide: BorderSide(color: AppColors.error, width: 1.5.w),
         ),
         hintStyle: TextStyle(
           color: colorScheme.onSurfaceVariant,
