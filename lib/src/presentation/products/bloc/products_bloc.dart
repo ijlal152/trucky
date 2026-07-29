@@ -1,6 +1,6 @@
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:trucky/main.dart' as app;
+import 'package:get_it/get_it.dart';
 import 'package:trucky/src/data/models/product_model.dart';
 import 'package:trucky/src/domain/repositories/product_repo.dart';
 import 'package:uuid/uuid.dart';
@@ -12,7 +12,7 @@ class ProductsBloc extends Bloc<ProductsEvent, ProductsState> {
   late final ProductRepository _productRepository;
 
   ProductsBloc() : super(const ProductsState()) {
-    _productRepository = app.productRepository;
+    _productRepository = GetIt.instance<ProductRepository>();
 
     on<LoadProducts>(_onLoadProducts);
     on<ToggleBalanceVisibility>(_onToggleBalanceVisibility);
@@ -28,17 +28,16 @@ class ProductsBloc extends Bloc<ProductsEvent, ProductsState> {
     try {
       final products = await _productRepository.getAllProducts();
       final total = await _productRepository.getTotalStockValue();
-      emit(state.copyWith(
-        status: ProductsStatus.loaded,
-        products: products,
-        totalStockValue: total,
-        message: null,
-      ));
+      emit(
+        state.copyWith(
+          status: ProductsStatus.loaded,
+          products: products,
+          totalStockValue: total,
+          message: null,
+        ),
+      );
     } catch (e) {
-      emit(state.copyWith(
-        status: ProductsStatus.error,
-        message: e.toString(),
-      ));
+      emit(state.copyWith(status: ProductsStatus.error, message: e.toString()));
     }
   }
 
@@ -83,17 +82,16 @@ class ProductsBloc extends Bloc<ProductsEvent, ProductsState> {
       final products = await _productRepository.getAllProducts();
       final total = await _productRepository.getTotalStockValue();
 
-      emit(state.copyWith(
-        status: ProductsStatus.loaded,
-        products: products,
-        totalStockValue: total,
-        message: null,
-      ));
+      emit(
+        state.copyWith(
+          status: ProductsStatus.loaded,
+          products: products,
+          totalStockValue: total,
+          message: null,
+        ),
+      );
     } catch (e) {
-      emit(state.copyWith(
-        status: ProductsStatus.error,
-        message: e.toString(),
-      ));
+      emit(state.copyWith(status: ProductsStatus.error, message: e.toString()));
     }
   }
 }

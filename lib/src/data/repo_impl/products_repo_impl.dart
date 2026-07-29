@@ -1,7 +1,9 @@
+import 'package:injectable/injectable.dart';
 import 'package:trucky/src/data/datasource/products/product_local_datasource.dart';
 import 'package:trucky/src/data/models/product_model.dart';
 import 'package:trucky/src/domain/repositories/product_repo.dart';
 
+@LazySingleton(as: ProductRepository)
 class ProductRepositoryImpl implements ProductRepository {
   final ProductLocalDatasource _localDatasource;
 

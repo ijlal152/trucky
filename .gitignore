@@ -44,3 +44,5 @@ app.*.map.json
 /android/app/profile
 /android/app/release
 pubspec.lock
+lib/core/di/service_locator.config.dart
+lib/src/data/models/product_model.g.dart

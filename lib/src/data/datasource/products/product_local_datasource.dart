@@ -1,4 +1,5 @@
 import 'package:hive/hive.dart';
+import 'package:injectable/injectable.dart';
 import 'package:trucky/src/data/models/product_model.dart';
 
 abstract class ProductLocalDatasource {
@@ -10,6 +11,7 @@ abstract class ProductLocalDatasource {
   Future<double> getTotalStockValue();
 }
 
+@LazySingleton(as: ProductLocalDatasource)
 class ProductLocalDatasourceImpl implements ProductLocalDatasource {
   static const String _boxName = 'products';
 
