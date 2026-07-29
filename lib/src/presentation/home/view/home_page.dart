@@ -133,14 +133,23 @@ class _HomeHeader extends StatelessWidget {
 class _DashboardSheet extends StatelessWidget {
   const _DashboardSheet();
 
+  // final List<_FeatureItem> _features = const [
+  //   _FeatureItem(icon: Icons.shopping_cart_outlined, label: 'Sales'),
+  //   _FeatureItem(icon: Icons.shopping_bag_outlined, label: 'Purchases'),
+  //   _FeatureItem(icon: Icons.people_outline, label: 'Suppliers'),
+  //   _FeatureItem(icon: Icons.person_outline, label: 'Clients'),
+  //   _FeatureItem(icon: Icons.inventory_2_outlined, label: 'Products'),
+  //   _FeatureItem(icon: Icons.account_balance_outlined, label: 'Treasury'),
+  //   _FeatureItem(icon: Icons.analytics_outlined, label: 'Analysis'),
+  // ];
   final List<_FeatureItem> _features = const [
-    _FeatureItem(icon: Icons.shopping_cart_outlined, label: 'Sales'),
-    _FeatureItem(icon: Icons.shopping_bag_outlined, label: 'Purchases'),
-    _FeatureItem(icon: Icons.people_outline, label: 'Suppliers'),
-    _FeatureItem(icon: Icons.person_outline, label: 'Clients'),
-    _FeatureItem(icon: Icons.inventory_2_outlined, label: 'Products'),
-    _FeatureItem(icon: Icons.account_balance_outlined, label: 'Treasury'),
-    _FeatureItem(icon: Icons.analytics_outlined, label: 'Analysis'),
+    _FeatureItem(icon: "assets/svgs/home-sales.svg", label: 'Sales'),
+    _FeatureItem(icon: "assets/svgs/home-purchases.svg", label: 'Purchases'),
+    _FeatureItem(icon: "assets/svgs/home-suppliers.svg", label: 'Suppliers'),
+    _FeatureItem(icon: "assets/svgs/home-clients.svg", label: 'Clients'),
+    _FeatureItem(icon: "assets/svgs/home-products.svg", label: 'Products'),
+    _FeatureItem(icon: "assets/svgs/home-treasury.svg", label: 'Treasury'),
+    _FeatureItem(icon: "assets/svgs/home-analysis.svg", label: 'Analysis'),
   ];
 
   @override
@@ -186,7 +195,7 @@ class _DashboardSheet extends StatelessWidget {
 
   Widget _buildFeatureCard(_FeatureItem item, ColorScheme cs) {
     return Container(
-      height: 110.h,
+      height: 130.h,
       width: 180.w,
       // padding: EdgeInsets.only(bottom: 20.h),
       decoration: BoxDecoration(
@@ -209,8 +218,8 @@ class _DashboardSheet extends StatelessWidget {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Icon(item.icon, size: 28.sp, color: AppColors.primaryBlue),
-
+              SvgPicture.asset(item.icon, height: 48.h),
+              5.verticalSpace,
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
@@ -240,7 +249,7 @@ class _DashboardSheet extends StatelessWidget {
 
   Widget _buildAnalysisCard(ColorScheme cs) {
     return Container(
-      height: 100.h,
+      height: 130.h,
       width: double.infinity,
       decoration: BoxDecoration(
         color: cs.surface,
@@ -259,26 +268,21 @@ class _DashboardSheet extends StatelessWidget {
         child: InkWell(
           borderRadius: BorderRadius.circular(14.r),
           onTap: () {},
-          child: Center(
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Icon(
-                  Icons.analytics_outlined,
-                  size: 24.sp,
-                  color: AppColors.primaryBlue,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              SvgPicture.asset("assets/svgs/home-analytics.svg", height: 48.h),
+              8.verticalSpace,
+              Text(
+                'Analysis',
+                style: TextStyle(
+                  fontSize: 16.sp,
+                  fontWeight: FontWeight.w600,
+                  color: cs.onSurface,
                 ),
-                8.horizontalSpace,
-                Text(
-                  'Analysis',
-                  style: TextStyle(
-                    fontSize: 16.sp,
-                    fontWeight: FontWeight.w600,
-                    color: cs.onSurface,
-                  ),
-                ),
-              ],
-            ),
+              ),
+            ],
           ),
         ),
       ),
@@ -291,7 +295,7 @@ class _DashboardSheet extends StatelessWidget {
 // ─────────────────────────────────────────────────────────────────────────────
 
 class _FeatureItem {
-  final IconData icon;
+  final String icon;
   final String label;
 
   const _FeatureItem({required this.icon, required this.label});

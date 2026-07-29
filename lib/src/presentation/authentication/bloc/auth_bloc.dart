@@ -52,7 +52,6 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
   ) async {
     emit(state.copyWith(status: AuthStatus.loading, isLoading: true));
     try {
-      // TODO: Implement actual sign in logic
       await Future.delayed(const Duration(seconds: 1));
       emit(
         state.copyWith(
