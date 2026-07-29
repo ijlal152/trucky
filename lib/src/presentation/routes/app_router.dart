@@ -70,7 +70,8 @@ class AppRouter {
               '',
             ),
             name: AppRoutes.productDashboard.name,
-            builder: (context, state) => const ProductDashboardPage(),
+            builder: (context, state) =>
+                ProductDashboardPage(productId: state.extra as String?),
           ),
         ],
       ),
