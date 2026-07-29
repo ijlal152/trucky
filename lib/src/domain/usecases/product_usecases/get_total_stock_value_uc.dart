@@ -3,13 +3,13 @@ import 'package:trucky/core/usecase/usecase.dart';
 import 'package:trucky/src/domain/repositories/product_repo.dart';
 
 @lazySingleton
-class DeleteProductUseCase extends UseCase<String, void> {
+class GetTotalStockValueUseCase extends UseCase<NoParams, double> {
   final ProductRepository _productRepository;
 
-  DeleteProductUseCase(this._productRepository);
+  GetTotalStockValueUseCase(this._productRepository);
 
   @override
-  Future<void> call(String params) async {
-    return _productRepository.deleteProduct(params);
+  Future<double> call(NoParams params) async {
+    return _productRepository.getTotalStockValue();
   }
 }

@@ -1,18 +1,24 @@
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get_it/get_it.dart';
+import 'package:trucky/core/usecase/usecase.dart';
 import 'package:trucky/src/data/models/product_model.dart';
-import 'package:trucky/src/domain/repositories/product_repo.dart';
-import 'package:uuid/uuid.dart';
+import 'package:trucky/src/domain/usecases/product_usecases/add_product_uc.dart';
+import 'package:trucky/src/domain/usecases/product_usecases/get_all_products_uc.dart';
+import 'package:trucky/src/domain/usecases/product_usecases/get_total_stock_value_uc.dart';
 
 part 'products_event.dart';
 part 'products_state.dart';
 
 class ProductsBloc extends Bloc<ProductsEvent, ProductsState> {
-  late final ProductRepository _productRepository;
+  late final GetAllProductsUseCase _getAllProductsUseCase;
+  late final GetTotalStockValueUseCase _getTotalStockValueUseCase;
+  late final AddProductUseCase _addProductUseCase;
 
   ProductsBloc() : super(const ProductsState()) {
-    _productRepository = GetIt.instance<ProductRepository>();
+    _getAllProductsUseCase = GetIt.instance<GetAllProductsUseCase>();
+    _getTotalStockValueUseCase = GetIt.instance<GetTotalStockValueUseCase>();
+    _addProductUseCase = GetIt.instance<AddProductUseCase>();
 
     on<LoadProducts>(_onLoadProducts);
     on<ToggleBalanceVisibility>(_onToggleBalanceVisibility);
@@ -26,8 +32,8 @@ class ProductsBloc extends Bloc<ProductsEvent, ProductsState> {
   ) async {
     emit(state.copyWith(status: ProductsStatus.loading));
     try {
-      final products = await _productRepository.getAllProducts();
-      final total = await _productRepository.getTotalStockValue();
+      final products = await _getAllProductsUseCase(NoParams());
+      final total = await _getTotalStockValueUseCase(NoParams());
       emit(
         state.copyWith(
           status: ProductsStatus.loaded,
@@ -53,7 +59,7 @@ class ProductsBloc extends Bloc<ProductsEvent, ProductsState> {
     Emitter<ProductsState> emit,
   ) async {
     try {
-      final total = await _productRepository.getTotalStockValue();
+      final total = await _getTotalStockValueUseCase(NoParams());
       emit(state.copyWith(totalStockValue: total));
     } catch (e) {
       emit(state.copyWith(totalStockValue: 0.0));
@@ -65,22 +71,21 @@ class ProductsBloc extends Bloc<ProductsEvent, ProductsState> {
     Emitter<ProductsState> emit,
   ) async {
     try {
-      final product = ProductModel(
-        id: const Uuid().v4(),
-        productName: event.productName,
-        productSKU: event.productSKU,
-        purchasePrice: event.purchasePrice,
-        sellingPrice: event.sellingPrice,
-        initialQuantity: event.initialQuantity,
-        quantityPerPackage: event.quantityPerPackage,
-        productImage: event.productImage,
+      await _addProductUseCase(
+        AddProductParams(
+          productName: event.productName,
+          productSKU: event.productSKU,
+          purchasePrice: event.purchasePrice,
+          sellingPrice: event.sellingPrice,
+          initialQuantity: event.initialQuantity,
+          quantityPerPackage: event.quantityPerPackage,
+          productImage: event.productImage,
+        ),
       );
 
-      await _productRepository.addProduct(product);
-
       // Reload products after adding
-      final products = await _productRepository.getAllProducts();
-      final total = await _productRepository.getTotalStockValue();
+      final products = await _getAllProductsUseCase(NoParams());
+      final total = await _getTotalStockValueUseCase(NoParams());
 
       emit(
         state.copyWith(
