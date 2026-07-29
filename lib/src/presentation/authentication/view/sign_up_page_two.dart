@@ -288,8 +288,6 @@ class _SignUpPageTwoState extends State<SignUpPageTwo> {
                             ? colorScheme.surfaceContainerHighest
                             : const Color(0xFFE8EBEF),
                         foregroundColor: colorScheme.onSurface,
-                        height: 56.h,
-                        radius: 100.r,
                       ),
                     );
                   },

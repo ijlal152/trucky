@@ -19,6 +19,17 @@ class AppColors {
   /// Lighter shade used as soft accent backgrounds.
   static const Color primaryBlueLight = Color(0xFFE3F2FD);
 
+  static const Color buttonPrimaryLight = Color(0xFF2B88D8);
+
+  /// Foreground (text/icon) color on top of [buttonPrimaryLight].
+  static const Color onButtonPrimaryLight = Color(0xFFFFFFFF);
+
+  /// Disabled button background in light mode.
+  static const Color buttonDisabledLight = Color(0xFFE8EBEE);
+
+  /// Foreground (text/icon) color on top of [buttonDisabledLight].
+  static const Color onButtonDisabledLight = Color(0xFF6B7280);
+
   // ---------------------------------------------------------------------------
   // Neutral colors
   // ---------------------------------------------------------------------------

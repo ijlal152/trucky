@@ -8,11 +8,11 @@ class CustomElevatedButton extends StatelessWidget {
   final Color? foregroundColor;
   final double? width;
   final double? height;
-  final double? radius;
   final Widget? prefixIcon;
   final Widget? suffixIcon;
   final bool fullWidth;
   final bool isDisabled;
+  final bool enableShadow;
 
   const CustomElevatedButton({
     super.key,
@@ -23,32 +23,58 @@ class CustomElevatedButton extends StatelessWidget {
     this.foregroundColor,
     this.width,
     this.height,
-    this.radius,
     this.prefixIcon,
     this.suffixIcon,
     this.fullWidth = true,
     this.isDisabled = false,
+    this.enableShadow = true,
   });
 
   @override
   Widget build(BuildContext context) {
-    // final isDisabled = isLoading || onPressed == null;
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
+    final isDark = theme.brightness == Brightness.dark;
+
+    // Light mode: brand color #2B88D8 (enabled) and #E8EBEE (disabled).
+    // Dark mode: leave the existing colorScheme behavior intact.
+    final Color enabledBg = isDark
+        ? colorScheme.primary
+        : AppColors.buttonPrimaryLight;
+    final Color enabledFg = isDark
+        ? colorScheme.onPrimary
+        : AppColors.onButtonPrimaryLight;
+    final Color disabledBg = isDark
+        ? colorScheme.surfaceContainerHighest
+        : AppColors.buttonDisabledLight;
+    final Color disabledFg = isDark
+        ? colorScheme.onSurfaceVariant
+        : AppColors.onButtonDisabledLight;
+
+    final effectiveBg = isDisabled
+        ? (backgroundColor ?? disabledBg)
+        : (backgroundColor ?? enabledBg);
+    final effectiveFg = isDisabled
+        ? (foregroundColor ?? disabledFg)
+        : (foregroundColor ?? enabledFg);
+
+    final isInteractive = !isDisabled && onPressed != null;
 
     return SizedBox(
       width: fullWidth ? double.infinity : width,
       height: height ?? 52.h,
       child: ElevatedButton(
-        onPressed: isDisabled ? null : onPressed,
+        onPressed: isInteractive ? onPressed : null,
+
         style: ElevatedButton.styleFrom(
-          backgroundColor: backgroundColor ?? colorScheme.primary,
-          foregroundColor: foregroundColor ?? colorScheme.onPrimary,
-          disabledBackgroundColor: (backgroundColor ?? colorScheme.primary)
-              .withValues(alpha: 0.4),
-          elevation: 0,
+          backgroundColor: effectiveBg,
+          foregroundColor: effectiveFg,
+          disabledBackgroundColor: effectiveBg,
+          disabledForegroundColor: effectiveFg,
+          elevation: isDisabled || !enableShadow ? 0 : 4,
+
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(radius ?? 32.r),
+            borderRadius: BorderRadius.circular(32.r),
           ),
         ),
         child: isLoading
@@ -57,9 +83,7 @@ class CustomElevatedButton extends StatelessWidget {
                 height: 22.h,
                 child: CircularProgressIndicator(
                   strokeWidth: 2.5,
-                  valueColor: AlwaysStoppedAnimation<Color>(
-                    colorScheme.onPrimary,
-                  ),
+                  valueColor: AlwaysStoppedAnimation<Color>(effectiveFg),
                 ),
               )
             : Row(
@@ -76,7 +100,7 @@ class CustomElevatedButton extends StatelessWidget {
                       fontFamily: 'Inter-SemiBold',
                       fontSize: 16.sp,
                       fontWeight: FontWeight.w600,
-                      color: foregroundColor ?? colorScheme.onPrimary,
+                      color: effectiveFg,
                     ),
                   ),
                   if (suffixIcon != null) ...[
