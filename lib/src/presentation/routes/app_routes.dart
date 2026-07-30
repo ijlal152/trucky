@@ -48,6 +48,26 @@ class AppRoutes {
     path: '/settings',
   );
 
+  // Supplier sub-routes
+  static const RouteSpec supplierDashboard = RouteSpec._(
+    name: 'supplierDashboard',
+    path: 'dashboard',
+  );
+  static const RouteSpec addSupplier = RouteSpec._(
+    name: 'addSupplier',
+    path: 'add',
+  );
+
+  // Client sub-routes
+  static const RouteSpec clientDashboard = RouteSpec._(
+    name: 'clientDashboard',
+    path: 'dashboard',
+  );
+  static const RouteSpec addClient = RouteSpec._(
+    name: 'addClient',
+    path: 'add',
+  );
+
   /// Location loaded when the app starts.
   static const RouteSpec initialLocation = splash;
 }

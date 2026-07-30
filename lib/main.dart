@@ -42,7 +42,7 @@ class TruckyApp extends StatelessWidget {
         BlocProvider(create: (_) => sl<AuthBloc>()),
         BlocProvider(create: (_) => HomeBloc()),
         BlocProvider(create: (_) => SettingsBloc()),
-        BlocProvider(create: (_) => ClientSupplierBloc()),
+        BlocProvider(create: (_) => sl<ClientSupplierBloc>()),
         BlocProvider(create: (_) => ProductsBloc()),
         BlocProvider(create: (_) => SalePurchaseBloc()),
         BlocProvider(create: (_) => TreasuryBloc()),

@@ -1,14 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:trucky/core/constants/enums.dart';
 import 'package:trucky/src/presentation/analysis/view/analysis_page.dart';
-import 'package:trucky/src/presentation/clients/view/clients_page.dart';
+import 'package:trucky/src/presentation/client-supplier/view/add_client_supp_page.dart';
+import 'package:trucky/src/presentation/client-supplier/view/all_client_supp_page.dart';
+import 'package:trucky/src/presentation/client-supplier/view/client_supp_dashboard_page.dart';
 import 'package:trucky/src/presentation/products/view/add_product_page.dart';
 import 'package:trucky/src/presentation/products/view/all_products_page.dart';
 import 'package:trucky/src/presentation/products/view/product_dashboard_page.dart';
 import 'package:trucky/src/presentation/purchases/view/purchases_page.dart';
 import 'package:trucky/src/presentation/routes/app_routes.dart';
 import 'package:trucky/src/presentation/sales/view/sales_page.dart';
-import 'package:trucky/src/presentation/suppliers/view/suppliers_page.dart';
 import 'package:trucky/src/presentation/treasury/view/treasury_page.dart';
 
 import '../authentication/view/sign_in_page.dart';
@@ -87,12 +89,42 @@ class AppRouter {
       GoRoute(
         path: AppRoutes.suppliers.path,
         name: AppRoutes.suppliers.name,
-        builder: (context, state) => const SuppliersPage(),
+        builder: (context, state) =>
+            const AllClientSuppPage(entityType: EntityType.supplier),
+        routes: [
+          GoRoute(
+            path: AppRoutes.supplierDashboard.path,
+            name: AppRoutes.supplierDashboard.name,
+            builder: (context, state) =>
+                const ClientSuppDashboardPage(entityType: EntityType.supplier),
+          ),
+          GoRoute(
+            path: AppRoutes.addSupplier.path,
+            name: AppRoutes.addSupplier.name,
+            builder: (context, state) =>
+                const AddClientSuppPage(entityType: EntityType.supplier),
+          ),
+        ],
       ),
       GoRoute(
         path: AppRoutes.clients.path,
         name: AppRoutes.clients.name,
-        builder: (context, state) => const ClientsPage(),
+        builder: (context, state) =>
+            const AllClientSuppPage(entityType: EntityType.client),
+        routes: [
+          GoRoute(
+            path: AppRoutes.clientDashboard.path,
+            name: AppRoutes.clientDashboard.name,
+            builder: (context, state) =>
+                const ClientSuppDashboardPage(entityType: EntityType.client),
+          ),
+          GoRoute(
+            path: AppRoutes.addClient.path,
+            name: AppRoutes.addClient.name,
+            builder: (context, state) =>
+                const AddClientSuppPage(entityType: EntityType.client),
+          ),
+        ],
       ),
       GoRoute(
         path: AppRoutes.treasury.path,
