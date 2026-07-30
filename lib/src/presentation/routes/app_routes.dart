@@ -43,6 +43,10 @@ class AppRoutes {
     name: 'analysis',
     path: '/analysis',
   );
+  static const RouteSpec settings = RouteSpec._(
+    name: 'settings',
+    path: '/settings',
+  );
 
   /// Location loaded when the app starts.
   static const RouteSpec initialLocation = splash;

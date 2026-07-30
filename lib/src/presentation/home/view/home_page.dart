@@ -122,7 +122,14 @@ class _HomeHeader extends StatelessWidget {
             ),
           ],
         ),
-        Icon(Icons.settings_outlined, size: 26.sp, color: Colors.white),
+        GestureDetector(
+          onTap: () => context.pushNamed(AppRoutes.settings.name),
+          child: Icon(
+            Icons.settings_outlined,
+            size: 26.sp,
+            color: Colors.white,
+          ),
+        ),
       ],
     );
   }

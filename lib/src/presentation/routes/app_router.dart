@@ -15,6 +15,7 @@ import '../authentication/view/sign_in_page.dart';
 import '../authentication/view/sign_up_page_one.dart';
 import '../authentication/view/sign_up_page_two.dart';
 import '../home/view/home_page.dart';
+import '../settings/view/settings.dart';
 import '../splash/view/splash_page.dart';
 
 class AppRouter {
@@ -102,6 +103,11 @@ class AppRouter {
         path: AppRoutes.analysis.path,
         name: AppRoutes.analysis.name,
         builder: (context, state) => const AnalysisPage(),
+      ),
+      GoRoute(
+        path: AppRoutes.settings.path,
+        name: AppRoutes.settings.name,
+        builder: (context, state) => const SettingsPage(),
       ),
     ],
   );
