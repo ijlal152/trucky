@@ -102,7 +102,7 @@ class _AllProductsPageState extends State<AllProductsPage> {
           ),
           floatingActionButton: CustomFloatingBtn(
             onTap: () {
-              context.goNamed(AppRoutes.addProduct.name);
+              context.pushNamed(AppRoutes.addProduct.name);
             },
           ),
         );

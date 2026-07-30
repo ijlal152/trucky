@@ -157,13 +157,13 @@ class _DashboardSheet extends StatelessWidget {
             children: [
               Expanded(
                 child: _buildFeatureCard(_features[0], cs, () {
-                  context.goNamed(AppRoutes.sales.name);
+                  context.pushNamed(AppRoutes.sales.name);
                 }),
               ),
               16.horizontalSpace,
               Expanded(
                 child: _buildFeatureCard(_features[1], cs, () {
-                  context.goNamed(AppRoutes.purchases.name);
+                  context.pushNamed(AppRoutes.purchases.name);
                 }),
               ),
             ],
@@ -174,13 +174,13 @@ class _DashboardSheet extends StatelessWidget {
             children: [
               Expanded(
                 child: _buildFeatureCard(_features[2], cs, () {
-                  context.goNamed(AppRoutes.suppliers.name);
+                  context.pushNamed(AppRoutes.suppliers.name);
                 }),
               ),
               16.horizontalSpace,
               Expanded(
                 child: _buildFeatureCard(_features[3], cs, () {
-                  context.goNamed(AppRoutes.clients.name);
+                  context.pushNamed(AppRoutes.clients.name);
                 }),
               ),
             ],
@@ -191,13 +191,13 @@ class _DashboardSheet extends StatelessWidget {
             children: [
               Expanded(
                 child: _buildFeatureCard(_features[4], cs, () {
-                  context.goNamed(AppRoutes.products.name);
+                  context.pushNamed(AppRoutes.products.name);
                 }),
               ),
               16.horizontalSpace,
               Expanded(
                 child: _buildFeatureCard(_features[5], cs, () {
-                  context.goNamed(AppRoutes.treasury.name);
+                  context.pushNamed(AppRoutes.treasury.name);
                 }),
               ),
             ],
@@ -205,7 +205,7 @@ class _DashboardSheet extends StatelessWidget {
           16.verticalSpace,
           // Analysis – full width
           _buildAnalysisCard(cs, () {
-            context.goNamed(AppRoutes.analysis.name);
+            context.pushNamed(AppRoutes.analysis.name);
           }),
         ],
       ),
