@@ -1,5 +1,8 @@
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:trucky/core/di/service_locator.dart';
+import 'package:trucky/src/domain/repositories/product_repo.dart';
+import 'package:trucky/src/domain/repositories/product_transaction_repo.dart';
 
 part 'home_event.dart';
 part 'home_state.dart';
@@ -16,9 +19,34 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
   ) async {
     emit(state.copyWith(status: HomeStatus.loading));
     try {
-      // TODO: Implement actual data loading logic
-      await Future.delayed(const Duration(seconds: 1));
-      emit(state.copyWith(status: HomeStatus.loaded, message: null));
+      final productRepo = sl<ProductRepository>();
+      final transactionRepo = sl<ProductTransactionRepository>();
+
+      // Load product count and stock value
+      final products = await productRepo.getAllProducts();
+      final productCount = products.length;
+      final totalStockValue = await productRepo.getTotalStockValue();
+
+      // Aggregate sale & purchase counts across all products
+      int saleCount = 0;
+      int purchaseCount = 0;
+      for (final product in products) {
+        saleCount += await transactionRepo.getTotalSoldForProduct(product.id);
+        purchaseCount += await transactionRepo.getTotalPurchasedForProduct(
+          product.id,
+        );
+      }
+
+      // Client & supplier counts – repos not fully implemented yet, default 0
+      emit(
+        state.copyWith(
+          status: HomeStatus.loaded,
+          productCount: productCount,
+          totalStockValue: totalStockValue,
+          saleCount: saleCount,
+          purchaseCount: purchaseCount,
+        ),
+      );
     } catch (e) {
       emit(state.copyWith(status: HomeStatus.error, message: e.toString()));
     }
@@ -29,9 +57,7 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
     Emitter<HomeState> emit,
   ) async {
     try {
-      // TODO: Implement actual data refresh logic
-      await Future.delayed(const Duration(seconds: 1));
-      emit(state.copyWith(status: HomeStatus.loaded, message: null));
+      add(const LoadHomeData());
     } catch (e) {
       emit(state.copyWith(status: HomeStatus.error, message: e.toString()));
     }

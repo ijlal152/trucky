@@ -16,6 +16,11 @@ class HomePage extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocBuilder<HomeBloc, HomeState>(
       builder: (context, state) {
+        // Trigger data load on first build
+        if (state.status == HomeStatus.initial) {
+          context.read<HomeBloc>().add(const LoadHomeData());
+        }
+
         return PopScope(
           canPop: true,
           child: CustomScaffold(
@@ -66,7 +71,7 @@ class HomePage extends StatelessWidget {
                           topRight: Radius.circular(30.r),
                         ),
                       ),
-                      child: _DashboardSheet(),
+                      child: _DashboardSheet(state: state),
                     ),
                   ),
                 ],
@@ -140,21 +145,22 @@ class _HomeHeader extends StatelessWidget {
 // ─────────────────────────────────────────────────────────────────────────────
 
 class _DashboardSheet extends StatelessWidget {
-  const _DashboardSheet();
+  final HomeState state;
 
-  final List<_FeatureItem> _features = const [
-    _FeatureItem(icon: "assets/svgs/home-sales.svg", label: 'Sales'),
-    _FeatureItem(icon: "assets/svgs/home-purchases.svg", label: 'Purchases'),
-    _FeatureItem(icon: "assets/svgs/home-suppliers.svg", label: 'Suppliers'),
-    _FeatureItem(icon: "assets/svgs/home-clients.svg", label: 'Clients'),
-    _FeatureItem(icon: "assets/svgs/home-products.svg", label: 'Products'),
-    _FeatureItem(icon: "assets/svgs/home-treasury.svg", label: 'Treasury'),
-    _FeatureItem(icon: "assets/svgs/home-analysis.svg", label: 'Analysis'),
-  ];
+  const _DashboardSheet({required this.state});
 
   @override
   Widget build(BuildContext context) {
     final cs = Theme.of(context).colorScheme;
+    final counts = [
+      state.saleCount,
+      state.purchaseCount,
+      state.supplierCount,
+      state.clientCount,
+      state.productCount,
+      0, // Treasury – not implemented yet
+    ];
+
     return Padding(
       padding: EdgeInsets.symmetric(horizontal: 16.w).copyWith(top: 35.h),
       child: Column(
@@ -163,15 +169,23 @@ class _DashboardSheet extends StatelessWidget {
           Row(
             children: [
               Expanded(
-                child: _buildFeatureCard(_features[0], cs, () {
-                  context.pushNamed(AppRoutes.sales.name);
-                }),
+                child: _buildFeatureCard(
+                  icon: "assets/svgs/home-sales.svg",
+                  label: 'Sales',
+                  count: counts[0],
+                  cs: cs,
+                  onTap: () => context.pushNamed(AppRoutes.sales.name),
+                ),
               ),
               16.horizontalSpace,
               Expanded(
-                child: _buildFeatureCard(_features[1], cs, () {
-                  context.pushNamed(AppRoutes.purchases.name);
-                }),
+                child: _buildFeatureCard(
+                  icon: "assets/svgs/home-purchases.svg",
+                  label: 'Purchases',
+                  count: counts[1],
+                  cs: cs,
+                  onTap: () => context.pushNamed(AppRoutes.purchases.name),
+                ),
               ),
             ],
           ),
@@ -180,15 +194,23 @@ class _DashboardSheet extends StatelessWidget {
           Row(
             children: [
               Expanded(
-                child: _buildFeatureCard(_features[2], cs, () {
-                  context.pushNamed(AppRoutes.suppliers.name);
-                }),
+                child: _buildFeatureCard(
+                  icon: "assets/svgs/home-suppliers.svg",
+                  label: 'Suppliers',
+                  count: counts[2],
+                  cs: cs,
+                  onTap: () => context.pushNamed(AppRoutes.suppliers.name),
+                ),
               ),
               16.horizontalSpace,
               Expanded(
-                child: _buildFeatureCard(_features[3], cs, () {
-                  context.pushNamed(AppRoutes.clients.name);
-                }),
+                child: _buildFeatureCard(
+                  icon: "assets/svgs/home-clients.svg",
+                  label: 'Clients',
+                  count: counts[3],
+                  cs: cs,
+                  onTap: () => context.pushNamed(AppRoutes.clients.name),
+                ),
               ),
             ],
           ),
@@ -197,15 +219,23 @@ class _DashboardSheet extends StatelessWidget {
           Row(
             children: [
               Expanded(
-                child: _buildFeatureCard(_features[4], cs, () {
-                  context.pushNamed(AppRoutes.products.name);
-                }),
+                child: _buildFeatureCard(
+                  icon: "assets/svgs/home-products.svg",
+                  label: 'Products',
+                  count: counts[4],
+                  cs: cs,
+                  onTap: () => context.pushNamed(AppRoutes.products.name),
+                ),
               ),
               16.horizontalSpace,
               Expanded(
-                child: _buildFeatureCard(_features[5], cs, () {
-                  context.pushNamed(AppRoutes.treasury.name);
-                }),
+                child: _buildFeatureCard(
+                  icon: "assets/svgs/home-treasury.svg",
+                  label: 'Treasury',
+                  count: counts[5],
+                  cs: cs,
+                  onTap: () => context.pushNamed(AppRoutes.treasury.name),
+                ),
               ),
             ],
           ),
@@ -219,11 +249,13 @@ class _DashboardSheet extends StatelessWidget {
     );
   }
 
-  Widget _buildFeatureCard(
-    _FeatureItem item,
-    ColorScheme cs,
+  Widget _buildFeatureCard({
+    required String icon,
+    required String label,
+    required int count,
+    required ColorScheme cs,
     VoidCallback? onTap,
-  ) {
+  }) {
     return Container(
       height: 130.h,
       width: 180.w,
@@ -248,13 +280,13 @@ class _DashboardSheet extends StatelessWidget {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              SvgPicture.asset(item.icon, height: 48.h),
+              SvgPicture.asset(icon, height: 48.h),
               5.verticalSpace,
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Text(
-                    ' (0) ',
+                    ' ($count) ',
                     style: TextStyle(
                       fontSize: 20.sp,
                       fontWeight: FontWeight.w700,
@@ -262,7 +294,7 @@ class _DashboardSheet extends StatelessWidget {
                     ),
                   ),
                   Text(
-                    item.label,
+                    label,
                     style: TextStyle(
                       fontSize: 13.sp,
                       color: cs.onSurfaceVariant,
@@ -318,15 +350,4 @@ class _DashboardSheet extends StatelessWidget {
       ),
     );
   }
-}
-
-// ─────────────────────────────────────────────────────────────────────────────
-//  Data model
-// ─────────────────────────────────────────────────────────────────────────────
-
-class _FeatureItem {
-  final String icon;
-  final String label;
-
-  const _FeatureItem({required this.icon, required this.label});
 }
