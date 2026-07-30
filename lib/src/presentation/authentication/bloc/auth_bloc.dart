@@ -209,7 +209,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     final hasUppercase = password.contains(RegExp(r'[A-Z]'));
     final hasNumber = password.contains(RegExp(r'[0-9]'));
     final hasSymbol = password.contains(RegExp(r'[!@#$%^&*(),.?":{}|<>]'));
-    final isValidPassword = hasLength && hasUppercase && hasNumber && hasSymbol;
+    final isValidPassword = hasLength && (hasUppercase || hasSymbol) && hasNumber;
 
     emit(
       state.copyWith(

@@ -20,6 +20,7 @@ class _SignUpPageOneState extends State<SignUpPageOne> {
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
+  String? _lastShownError;
 
   @override
   void dispose() {
@@ -54,11 +55,16 @@ class _SignUpPageOneState extends State<SignUpPageOne> {
     return BlocListener<AuthBloc, AuthState>(
       listener: (context, state) {
         if (state.status == AuthStatus.stepOneVerified) {
+          _lastShownError = null;
           context.goNamed(AppRoutes.signUpStepTwo.name);
         } else if (state.status == AuthStatus.error) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text(state.errorMessage ?? 'An error occurred')),
-          );
+          if (state.errorMessage != null &&
+              state.errorMessage != _lastShownError) {
+            _lastShownError = state.errorMessage;
+            ScaffoldMessenger.of(
+              context,
+            ).showSnackBar(SnackBar(content: Text(state.errorMessage!)));
+          }
         }
       },
       child: PopScope(

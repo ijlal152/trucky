@@ -22,6 +22,7 @@ class _SignInPageState extends State<SignInPage> {
   final _passwordController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
   bool _obscurePassword = true;
+  String? _lastShownError;
 
   @override
   void dispose() {
@@ -54,14 +55,18 @@ class _SignInPageState extends State<SignInPage> {
             context.goNamed(AppRoutes.home.name);
             break;
           case AuthStatus.error:
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(
-                content: Text(state.errorMessage ?? 'An error occurred'),
-              ),
-            );
+            if (state.errorMessage != null &&
+                state.errorMessage != _lastShownError) {
+              _lastShownError = state.errorMessage;
+              ScaffoldMessenger.of(
+                context,
+              ).showSnackBar(SnackBar(content: Text(state.errorMessage!)));
+            }
+            break;
+          case AuthStatus.loading:
+            _lastShownError = null;
             break;
           case AuthStatus.initial:
-          case AuthStatus.loading:
           case AuthStatus.unauthenticated:
           case AuthStatus.stepOneVerified:
             break;
@@ -155,6 +160,9 @@ class _SignInPageState extends State<SignInPage> {
                   btnText: context.tr(AppStrings.signUpHere),
                   text: context.tr(AppStrings.dontHaveAnAccount),
                   onTap: () {
+                    context.read<AuthBloc>().add(
+                      const ResetAuthStateRequested(),
+                    );
                     context.goNamed(AppRoutes.signUp.name);
                   },
                 ),

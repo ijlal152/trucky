@@ -23,6 +23,7 @@ class _SignUpPageTwoState extends State<SignUpPageTwo> {
   final _businessNameController = TextEditingController();
   final _addressController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
+  String? _lastShownError;
 
   @override
   void dispose() {
@@ -59,16 +60,19 @@ class _SignUpPageTwoState extends State<SignUpPageTwo> {
   @override
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
-    final isDark = Theme.of(context).brightness == Brightness.dark;
 
     return BlocListener<AuthBloc, AuthState>(
       listener: (context, state) {
         if (state.status == AuthStatus.authenticated) {
           context.goNamed(AppRoutes.home.name);
         } else if (state.status == AuthStatus.error) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text(state.errorMessage ?? 'An error occurred')),
-          );
+          if (state.errorMessage != null &&
+              state.errorMessage != _lastShownError) {
+            _lastShownError = state.errorMessage;
+            ScaffoldMessenger.of(
+              context,
+            ).showSnackBar(SnackBar(content: Text(state.errorMessage!)));
+          }
         }
       },
       child: PopScope(
@@ -260,6 +264,7 @@ class _SignUpPageTwoState extends State<SignUpPageTwo> {
             ),
           ),
           bottomNavigationBar: CustomBottomNavBarWidget(
+            navBarColor: Colors.transparent,
             widget: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
@@ -284,10 +289,6 @@ class _SignUpPageTwoState extends State<SignUpPageTwo> {
                         text: context.tr(AppStrings.continueBtn),
                         isLoading: state.isLoading,
                         onPressed: _onContinue,
-                        backgroundColor: isDark
-                            ? colorScheme.surfaceContainerHighest
-                            : const Color(0xFFE8EBEF),
-                        foregroundColor: colorScheme.onSurface,
                       ),
                     );
                   },
